@@ -1,9 +1,9 @@
 import test from 'node:test';
 import { JSDOM } from 'jsdom';
 
-import h, { set } from './html.ts';
+import { set, html, svg, mathml, xml } from './element.ts';
 
-test('[html.set] sets attributes', t => {
+test('[element.set] sets attributes', t => {
   const { window } = new JSDOM();
 
   const a = window.document.createElement('div');
@@ -35,11 +35,38 @@ test('[html.set] sets attributes', t => {
   t.assert.notEqual(g.getAttribute('x'), 'undefined', 'undefined');
 });
 
-test('[html] creates elements', t => {
+test('[element.html] creates element', t => {
   const { window } = new JSDOM();
 
-  const a = h(window.document)('a')({ href: '/' })('a');
+  const a = html(window.document)('a')({ href: '/' })('a');
   t.assert.equal(a.tagName, 'A', 'tag');
   t.assert.equal(a.getAttribute('href'), '/', 'attribute');
   t.assert.equal(a.text, 'a', 'children');
+});
+
+test('[element.svg] creates element', t => {
+  const { window } = new JSDOM();
+
+  const a = svg(window.document)('a')({ href: '/' })('a');
+  t.assert.equal(a.tagName, 'a', 'tag');
+  t.assert.equal(a.getAttribute('href'), '/', 'attribute');
+  t.assert.equal(a.textContent, 'a', 'children');
+});
+
+test('[element.mathml] creates element', t => {
+  const { window } = new JSDOM();
+
+  const a = mathml(window.document)('blur')({ href: '/' })('a');
+  t.assert.equal(a.tagName, 'blur', 'tag');
+  t.assert.equal(a.getAttribute('href'), '/', 'attribute');
+  t.assert.equal(a.textContent, 'a', 'children');
+});
+
+test('[element.xml] creates element', t => {
+  const { window } = new JSDOM();
+
+  const a = xml(window.document)('a')({ href: '/' })('a');
+  t.assert.equal(a.tagName, 'A', 'tag');
+  t.assert.equal(a.getAttribute('href'), '/', 'attribute');
+  t.assert.equal(a.textContent, 'a', 'children');
 });
