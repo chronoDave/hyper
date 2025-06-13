@@ -2,17 +2,30 @@
   "name": "@chronocide/hyper",
   "version": "0.0.1",
   "type": "module",
+  "types": "dist/hyper.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": "./dist/hyper.js"
+  },
+  "files": [
+    "dist/**/*"
+  ],
   "author": "Chronocide",
   "license": "AGPL-3.0-only",
   "scripts": {
-    "test": "node --experimental-strip-types --no-warnings --test src/**/*.spec.ts"
+    "test": "node --experimental-strip-types --no-warnings --test src/**/*.spec.ts",
+    "build": "rollup -c"
   },
   "devDependencies": {
     "@chronocide/eslint-config": "github:chronoDave/eslint-config",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.15.29",
+    "esbuild": "^0.25.5",
     "eslint": "^9.28.0",
     "jsdom": "^26.1.0",
+    "rollup": "^4.42.0",
+    "rollup-plugin-dts": "^6.2.1",
+    "rollup-plugin-esbuild": "^6.2.1",
     "typescript": "^5.8.3"
   }
 }
