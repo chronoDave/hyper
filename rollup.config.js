@@ -3,24 +3,17 @@ import path from 'path';
 import esbuild from 'rollup-plugin-esbuild';
 import dts from 'rollup-plugin-dts';
 
-const input = 'src/hyper.ts';
-const output = type => `dist/hyper.${type}`;
+const input = 'src/index.ts';
+const outdir = path.join(process.cwd(), 'dist');
+const output = type => `${outdir}/hyper.${type}`;
 
-await fsp.rm(path.join(process.cwd(), 'dist'), {
-  recursive: true,
-  force: true
-});
+await fsp.rm(outdir, { recursive: true, force: true });
 
 export default [{
   input,
-  plugins: [
-    esbuild({
-      target: 'esnext'
-    })
-  ],
+  plugins: [esbuild({ target: 'esnext' })],
   output: [{
     file: output('js'),
-    exports: 'auto',
     format: 'es'
   }]
 }, {

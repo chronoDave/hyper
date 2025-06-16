@@ -1,39 +1,7 @@
 import test from 'node:test';
 import { JSDOM } from 'jsdom';
 
-import { set, html, svg, mathml, xml } from './element.ts';
-
-test('[element.set] sets attributes', t => {
-  const { window } = new JSDOM();
-
-  const a = window.document.createElement('div');
-  set(a)({ class: 'body' });
-  t.assert.equal(a.classList.contains('body'), true, 'class');
-
-  const b = window.document.createElement('div');
-  set(b)({ 'aria-hidden': true });
-  t.assert.equal(b.getAttribute('aria-hidden'), 'true', 'true');
-
-  const c = window.document.createElement('div');
-  set(c)({ 'aria-hidden': false });
-  t.assert.equal(c.getAttribute('aria-hidden'), 'false', 'false');
-
-  const d = window.document.createElement('div');
-  set(d)({ height: 80 });
-  t.assert.equal(d.getAttribute('height'), '80', 'number');
-
-  const e = window.document.createElement('div');
-  set(e)({ width: 32, height: 32 });
-  t.assert.equal(e.attributes.length, 2, 'multiple');
-
-  const f = window.document.createElement('div');
-  set(f)({ x: null });
-  t.assert.notEqual(f.getAttribute('x'), 'null', 'null');
-
-  const g = window.document.createElement('div');
-  set(g)({ x: undefined });
-  t.assert.notEqual(g.getAttribute('x'), 'undefined', 'undefined');
-});
+import html, { mathml, svg, xml } from './index.ts';
 
 test('[element.html] creates element', t => {
   const { window } = new JSDOM();
