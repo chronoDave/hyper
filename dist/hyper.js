@@ -9,14 +9,33 @@ const attributes = (element) => (attributes2) => Object.entries(attributes2).for
   if (v === true) element.toggleAttribute(k, v);
 });
 
-const create = (element) => (attributes$1) => (children) => {
-  maybe(attributes(element))(attributes$1);
-  element.append(...children);
-  return element;
+const init = (document2) => ({
+  create: (element) => (attributes$1) => (children) => {
+    const root = element(document2);
+    maybe(attributes(root))(attributes$1);
+    root.append(...children);
+    return root;
+  }
+});
+let hyper = typeof document !== "undefined" ? init(document) : null;
+const env = (document2) => {
+  hyper = init(document2);
 };
-var index = (document) => (tag) => (attributes) => (...children) => create(document.createElement(tag))(attributes)(children);
-const svg = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/2000/svg", tag))(attributes)(children);
-const mathml = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/1998/Math/MathML", tag))(attributes)(children);
-const xml = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/1999/xhtml", tag))(attributes)(children);
+var hyper$1 = (tag) => (attributes) => (...children) => {
+  if (!hyper) throw new Error("Missing env");
+  return hyper.create((document2) => document2.createElement(tag))(attributes)(children);
+};
+const svg = (tag) => (attributes) => (...children) => {
+  if (!hyper) throw new Error("Missing env");
+  return hyper.create((document2) => document2.createElementNS("http://www.w3.org/2000/svg", tag))(attributes)(children);
+};
+const mathml = (tag) => (attributes) => (...children) => {
+  if (!hyper) throw new Error("Missing env");
+  return hyper.create((document2) => document2.createElementNS("http://www.w3.org/1998/Math/MathML", tag))(attributes)(children);
+};
+const xml = (tag) => (attributes) => (...children) => {
+  if (!hyper) throw new Error("Missing env");
+  return hyper.create((document2) => document2.createElementNS("http://www.w3.org/1999/xhtml", tag))(attributes)(children);
+};
 
-export { index as default, mathml, svg, xml };
+export { hyper$1 as default, env, mathml, svg, xml };
