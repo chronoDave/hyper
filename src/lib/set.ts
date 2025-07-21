@@ -3,11 +3,11 @@ export type Attributes = Record<string, unknown>;
 /**
  * Set element attributes.
  * 
- * Only `string`, `number` and `boolean` attributes are set:
+ * Only `string`, `number` and `true` attributes are set:
  * 
  *  - `string`: `key="string"`
  *  - `number`: `key="number"`
- *  - `boolean`: `key`
+ *  - `true`: `key=""`
  * 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute
  * */

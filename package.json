@@ -10,6 +10,9 @@
   "files": [
     "dist/**/*"
   ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "author": "Chronocide",
   "license": "AGPL-3.0-only",
   "scripts": {
