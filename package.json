@@ -16,7 +16,7 @@
   "author": "Chronocide",
   "license": "AGPL-3.0-only",
   "scripts": {
-    "test": "node --experimental-strip-types --no-warnings --test src/**/*.spec.ts",
+    "test": "node --env-file=.env --experimental-strip-types --no-warnings --test src/**/*.spec.ts",
     "build": "rollup -c",
     "preversion": "npm run test && npm run build"
   },
@@ -27,6 +27,7 @@
     "esbuild": "^0.25.5",
     "eslint": "^9.28.0",
     "jsdom": "^26.1.0",
+    "puppeteer-core": "^24.14.0",
     "rollup": "^4.42.0",
     "rollup-plugin-dts": "^6.2.1",
     "rollup-plugin-esbuild": "^6.2.1",

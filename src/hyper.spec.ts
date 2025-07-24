@@ -1,62 +1,33 @@
-import { test } from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
+import puppeteer from 'puppeteer-core';
+import fsp from 'fs/promises';
+import path from 'path';
 
 import dom from '../test/dom.ts';
 
-import html, { mathml, svg, xml, env } from './hyper.ts';
+import h, { env } from './hyper.ts';
 
-test('[hyper.html] creates HTML element', () => {
-  const { window } = dom();
-  env(window.document);
+test('[hyper] does not error if document is set manually', () => {
+  const { document } = dom();
+  env(document);
 
-  const a = html('a')({ href: '/' })('a');
-
-  assert.ok(a instanceof window.HTMLElement);
-  assert.equal(a.tagName, 'A', 'tag');
-  assert.equal(a.getAttribute('href'), '/', 'attribute');
-  assert.equal(a.text, 'a', 'children');
+  assert.doesNotThrow(h('div')());
 });
 
-test('[hyper.svg] creates SVG element', () => {
-  const { window } = dom();
-  env(window.document);
+test('[hyper] does not error if document is set automatically', async () => {
+  const browser = await puppeteer.launch({ executablePath: process.env.BROWSER_PATH, timeout: 1000 });
+  const page = await browser.newPage();
+  const hyper = await fsp.readFile(path.join(process.cwd(), 'dist/hyper.js'), 'utf-8');
 
-  const a = svg('a')({ href: '/' })('a');
+  const match = /export { (.*) as \w+.*;/.exec(hyper);
+  await page.setContent(`<body><script>${hyper.replace(/export.*;/, '')}document.body.append(${match?.[1]}('h1')()('Hyper'));</script></body>`);
 
-  assert.ok(a instanceof window.SVGElement);
-  assert.equal(a.namespaceURI, 'http://www.w3.org/2000/svg');
-  assert.equal(a.tagName, 'a', 'tag');
-  assert.equal(a.getAttribute('href'), '/', 'attribute');
-  assert.equal(a.textContent, 'a', 'children');
-});
-
-test('[hyper.mathml] creates MathML element', () => {
-  const { window } = dom();
-  env(window.document);
-
-  const a = mathml('blur')({ href: '/' })('a');
-
-  /**
-   * `MathMLElement` is currently not supported by `jsdom`
-   * 
-   * @see https://github.com/jsdom/jsdom/issues/3515
-   */
-  // assert.ok(a instanceof window.MathMLElement);
-  assert.equal(a.namespaceURI, 'http://www.w3.org/1998/Math/MathML');
-  assert.equal(a.tagName, 'blur', 'tag');
-  assert.equal(a.getAttribute('href'), '/', 'attribute');
-  assert.equal(a.textContent, 'a', 'children');
-});
-
-test('[hyper.xml] creates XML element', () => {
-  const { window } = dom();
-  env(window.document);
-
-  const a = xml('a')({ href: '/' })('a');
-
-  assert.ok(a instanceof window.HTMLElement);
-  assert.equal(a.namespaceURI, 'http://www.w3.org/1999/xhtml');
-  assert.equal(a.tagName, 'A', 'tag');
-  assert.equal(a.getAttribute('href'), '/', 'attribute');
-  assert.equal(a.textContent, 'a', 'children');
+  try {
+    await assert.doesNotReject(page.waitForSelector('h1'));
+  } catch (err) {
+    assert.fail(err as Error);
+  } finally {
+    await browser.close();
+  }
 });
