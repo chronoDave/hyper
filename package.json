@@ -18,7 +18,8 @@
   "scripts": {
     "test": "node --env-file=.env --experimental-strip-types --no-warnings --test src/**/*.spec.ts",
     "build": "rollup -c",
-    "preversion": "npm run test && npm run build"
+    "preversion": "npm run test && npm run build",
+    "postversion": "npm publish"
   },
   "devDependencies": {
     "@chronocide/eslint-config": "github:chronoDave/eslint-config",
