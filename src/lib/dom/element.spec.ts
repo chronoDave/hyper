@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import dom from '../../test/dom.ts';
+import dom from '../../../test/dom.ts';
 
 import { html, mathml, svg, xml } from './element.ts';
 
@@ -13,7 +13,7 @@ test('[hyper.html] creates HTML element', () => {
   assert.ok(a instanceof window.HTMLElement);
   assert.equal(a.tagName, 'A', 'tag');
   assert.equal(a.getAttribute('href'), '/', 'attribute');
-  assert.equal(a.text, 'a', 'children');
+  assert.equal(a.textContent, 'a', 'children');
 });
 
 test('[hyper.svg] creates SVG element', () => {

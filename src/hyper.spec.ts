@@ -16,7 +16,7 @@ test('[hyper] does not error if document is set manually', () => {
 });
 
 test('[hyper] does not error if document is set automatically', async () => {
-  const browser = await puppeteer.launch({ executablePath: process.env.BROWSER_PATH, timeout: 1000 });
+  const browser = await puppeteer.launch({ executablePath: process.env.BROWSER_PATH });
   const page = await browser.newPage();
   const hyper = await fsp.readFile(path.join(process.cwd(), 'dist/hyper.js'), 'utf-8');
 

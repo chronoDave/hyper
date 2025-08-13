@@ -1,6 +1,6 @@
 import type { Attributes } from './set.ts';
 
-import { maybe } from './fn.ts';
+import { maybe } from '../fn.ts';
 import * as set from './set.ts';
 
 export type Child = Node | string;

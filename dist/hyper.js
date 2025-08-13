@@ -19,6 +19,32 @@ const svg$1 = (document) => (tag) => (attributes) => (...children) => create(doc
 const mathml$1 = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/1998/Math/MathML", tag))(attributes)(children);
 const xml$1 = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/1999/xhtml", tag))(attributes)(children);
 
+var list = (key) => (component) => (root) => {
+  const cache = /* @__PURE__ */ new Map();
+  return (next) => {
+    const keys = next.map(key);
+    if (next.length !== new Set(keys).size) throw new Error("Keys are not unique");
+    const cur = Array.from(cache.keys());
+    const fresh = next.reduce((acc, cur2, i) => {
+      const k = keys[i];
+      if (!cache.get(k)) {
+        const element = component(cur2);
+        cache.set(k, element);
+        root.appendChild(element);
+      } else {
+        acc.push(k);
+      }
+      return acc;
+    }, []);
+    cur.forEach((k) => {
+      if (!fresh.includes(k)) {
+        cache.get(k)?.remove();
+        cache.delete(k);
+      }
+    });
+  };
+};
+
 const instance = /* @__PURE__ */ new Map();
 if (typeof document !== "undefined") instance.set("document", document);
 const env = (document2) => instance.set("document", document2);
@@ -27,4 +53,4 @@ const svg = (tag) => svg$1(instance.get("document"))(tag);
 const mathml = (tag) => mathml$1(instance.get("document"))(tag);
 const xml = (tag) => xml$1(instance.get("document"))(tag);
 
-export { hyper as default, env, mathml, svg, xml };
+export { hyper as default, env, list, mathml, svg, xml };
