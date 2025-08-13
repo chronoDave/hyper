@@ -25,21 +25,26 @@ var list = (key) => (component) => (root) => {
     const keys = next.map(key);
     if (next.length !== new Set(keys).size) throw new Error("Keys are not unique");
     const cur = Array.from(cache.keys());
-    const fresh = next.reduce((acc, cur2, i) => {
-      const k = keys[i];
-      if (!cache.get(k)) {
-        const element = component(cur2);
-        cache.set(k, element);
-        root.appendChild(element);
+    const cached = next.reduce((acc, cur2, i) => {
+      const key2 = keys[i];
+      const element = cache.get(key2) ?? component(cur2);
+      if (!cache.has(key2)) {
+        cache.set(key2, element);
       } else {
-        acc.push(k);
+        acc.push(key2);
+      }
+      const child = root.children.item(i);
+      if (child) {
+        child.replaceWith(element);
+      } else {
+        root.appendChild(element);
       }
       return acc;
     }, []);
-    cur.forEach((k) => {
-      if (!fresh.includes(k)) {
-        cache.get(k)?.remove();
-        cache.delete(k);
+    cur.forEach((key2) => {
+      if (!cached.includes(key2)) {
+        cache.get(key2)?.remove();
+        cache.delete(key2);
       }
     });
   };

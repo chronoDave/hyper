@@ -57,7 +57,7 @@ test('[list] removes children on update', () => {
   assert.equal(ul.children[0].textContent, '2', 'start');
 
   update([2]);
-  assert.equal(ul.children.length, 2, 'end size');
+  assert.equal(ul.children.length, 1, 'end size');
   assert.equal(ul.children[0].textContent, '2', 'end');
 });
 
@@ -74,10 +74,8 @@ test('[list] caches children', () => {
 
 test('[list] orders children', () => {
   const { ul, update } = struct();
-  const { children } = ul;
 
-  update([2, 1]);
+  update([3, 2, 1]);
 
-  assert.equal(children.length, ul.children.length);
-  assert.equal(children[0], ul.children[1], 'shuffle');
+  assert.equal(ul.children[0].textContent, '3', 'shuffle');
 });

@@ -18,9 +18,30 @@ npm i @chronocide/hyper
 ```TS
 import h from '@chronocide/hyper';
 
-const img = h(document)('img')({ src: '/cat.png' })(); // HTMLImageElement
+const img = h('img')({ src: '/cat.png' })(); // HTMLImageElement
 
 document.body.appendChild(img);
+```
+
+### List
+
+```TS
+import type { Component } from '@chronocide/hyper';
+import { list } from '@chronocide/hyper';
+
+type Planet = { id: string; name: string };
+
+const data: Planet[] = [
+  { id: 'jupiter', name: 'Jupiter' },
+  { id: 'mars', name: 'Mars' },
+  { id: 'pluto', name: 'Pluto' }
+];
+
+const ul = h('ul')()();
+const component: Component<Planet> = planet => h('li')()(planet.name);
+
+const update = list<Planet>(planet => planet.id)(component)(ul);
+update(data);
 ```
 
 ### Testing
@@ -35,6 +56,8 @@ const dom = new JSDOM();
 
 env(dom.window.document);
 ```
+
+Examples can be found in the test files, such as [hyper.spec.ts](/src/hyper.spec.ts).
 
 ## Testing
 
