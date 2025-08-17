@@ -25,7 +25,9 @@ var list = (component) => (root) => {
     const refs = /* @__PURE__ */ new WeakSet();
     while (root.children.length > next.length) root.lastChild?.remove();
     next.forEach((data, i) => {
+      const child = root.children.item(i);
       let element = cache.get(data);
+      if (element === child) return;
       if (!element) {
         element = component(data);
         cache.set(data, element);
@@ -35,7 +37,6 @@ var list = (component) => (root) => {
       } else {
         refs.add(element);
       }
-      const child = root.children.item(i);
       if (child) {
         root.replaceChild(element, child);
       } else {
