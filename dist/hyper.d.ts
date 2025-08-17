@@ -4,7 +4,7 @@ type Child = Node | string;
 type HTMLVoidElementTagName = 'area' | 'base' | 'br' | 'col' | 'embed' | 'hr' | 'img' | 'input' | 'link' | 'meta' | 'source' | 'track' | 'wbr';
 
 type Component<T> = (data: T) => Element;
-declare const _default$1: <T>(key: (data: T) => string) => (component: Component<T>) => (root: Element) => (next: T[]) => void;
+declare const _default$1: <T>(component: Component<T>) => (root: Element) => (next: T[]) => void;
 
 declare const env: (document: Document) => Map<any, any>;
 declare const _default: <T extends keyof HTMLElementTagNameMap>(tag: T) => <P extends Attributes>(attributes?: P | undefined) => (...children: T extends HTMLVoidElementTagName ? never[] : Child[]) => HTMLElementTagNameMap[T];

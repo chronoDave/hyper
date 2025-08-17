@@ -19,32 +19,27 @@ const svg$1 = (document) => (tag) => (attributes) => (...children) => create(doc
 const mathml$1 = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/1998/Math/MathML", tag))(attributes)(children);
 const xml$1 = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/1999/xhtml", tag))(attributes)(children);
 
-var list = (key) => (component) => (root) => {
+var list = (component) => (root) => {
   const cache = /* @__PURE__ */ new Map();
   return (next) => {
-    const keys = next.map(key);
-    if (next.length !== new Set(keys).size) throw new Error("Keys are not unique");
-    const cur = Array.from(cache.keys());
-    const cached = next.reduce((acc, cur2, i) => {
-      const key2 = keys[i];
-      const element = cache.get(key2) ?? component(cur2);
-      if (!cache.has(key2)) {
-        cache.set(key2, element);
+    const refs = /* @__PURE__ */ new WeakSet();
+    while (root.children.length > next.length) root.lastChild?.remove();
+    next.forEach((data, i) => {
+      let element = cache.get(data);
+      if (!element) {
+        element = component(data);
+        cache.set(data, element);
+      }
+      if (refs.has(element)) {
+        element = element.cloneNode(true);
       } else {
-        acc.push(key2);
+        refs.add(element);
       }
       const child = root.children.item(i);
       if (child) {
-        child.replaceWith(element);
+        root.replaceChild(element, child);
       } else {
         root.appendChild(element);
-      }
-      return acc;
-    }, []);
-    cur.forEach((key2) => {
-      if (!cached.includes(key2)) {
-        cache.get(key2)?.remove();
-        cache.delete(key2);
       }
     });
   };
