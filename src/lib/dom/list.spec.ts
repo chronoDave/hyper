@@ -11,7 +11,7 @@ const struct = () => {
   const h = html(document);
 
   const ul = h('ul')()();
-  const update = list<number>(n => `${n}`)(n => h('li')()(`${n}`))(ul);
+  const update = list<number>(n => h('li')()(`${n}`))(ul);
   update([1, 2, 3]);
 
   return { ul, update };
@@ -20,23 +20,8 @@ const struct = () => {
 test('[list] creates list', () => {
   const { ul } = struct();
 
-  assert.equal(
-    ul.children.length,
-    3,
-    'has children'
-  );
-
-  assert.equal(
-    ul.children.item(0)?.textContent,
-    '1',
-    'renders child'
-  );
-});
-
-test('[list] throws if keys are not unique', () => {
-  const { update } = struct();
-
-  assert.throws(() => update([1, 1, 1]));
+  assert.equal(ul.children.length, 3, 'has children');
+  assert.equal(ul.children.item(0)?.textContent, '1', 'renders child');
 });
 
 test('[list] adds children on update', () => {
@@ -56,26 +41,20 @@ test('[list] removes children on update', () => {
   assert.equal(ul.children.length, 2, 'start size');
   assert.equal(ul.children[0].textContent, '2', 'start');
 
-  update([2]);
-  assert.equal(ul.children.length, 1, 'end size');
-  assert.equal(ul.children[0].textContent, '2', 'end');
+  update([]);
+  assert.equal(ul.children.length, 0, 'remove');
 });
 
 test('[list] caches children', () => {
   const { ul, update } = struct();
-  const { children } = ul;
+  const children = Array.from(ul.children);
 
   update([1, 2, 3, 4]);
-  assert.equal(children[0], ul.children[0], 'add');
+  assert.equal(children[2], ul.children[2], 'add');
 
   update([1, 2]);
-  assert.equal(children[0], ul.children[0], 'remove');
-});
+  assert.equal(children[1], ul.children[1], 'remove');
 
-test('[list] orders children', () => {
-  const { ul, update } = struct();
-
-  update([3, 2, 1]);
-
-  assert.equal(ul.children[0].textContent, '3', 'shuffle');
+  update([2, 1]);
+  assert.equal(children[0], ul.children[1], 'shuffle');
 });

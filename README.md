@@ -25,6 +25,8 @@ document.body.appendChild(img);
 
 ### List
 
+Components are cached and only updated if the data is changed, order does not matter. Data does not need to be unique, duplicate nodes are cloned.
+
 ```TS
 import type { Component } from '@chronocide/hyper';
 import { list } from '@chronocide/hyper';
@@ -40,7 +42,7 @@ const data: Planet[] = [
 const ul = h('ul')()();
 const component: Component<Planet> = planet => h('li')()(planet.name);
 
-const update = list<Planet>(planet => planet.id)(component)(ul);
+const update = list<Planet>(component)(ul);
 update(data);
 ```
 

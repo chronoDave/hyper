@@ -1,41 +1,40 @@
 export type Component<T> = (data: T) => Element;
 
-export default <T>(key: (data: T) => string) =>
-  (component: Component<T>) =>
-    (root: Element) => {
-      const cache = new Map<string, Element>();
-  
-      return (next: T[]): void => {
-        const keys = next.map(key);
-        if (next.length !== new Set(keys).size) throw new Error('Keys are not unique');
+export default <T>(component: Component<T>) =>
+  (root: Element) => {
+    const cache = new Map<T, Element>();
+    
+    return (next: T[]): void => {
+      const refs = new WeakSet();
 
-        const cur = Array.from(cache.keys());
-        const cached = next.reduce<string[]>((acc, cur, i) => {
-          const key = keys[i];
-          const element = cache.get(key) ?? component(cur);
-          
-          if (!cache.has(key)) {
-            cache.set(key, element);
-          } else {
-            acc.push(key);
-          }
+      /** Remove excess children in reverse order */
+      while (root.children.length > next.length) root.lastChild?.remove();
 
-          const child = root.children.item(i);
-          if (child) {
-            child.replaceWith(element)
-          } else {
-            root.appendChild(element);
-          }
+      next.forEach((data, i) => {
+        /** Create and cache element */
+        let element = cache.get(data);
+        if (!element) {
+          element = component(data);
+          cache.set(data, element);
+        }
 
-          return acc;
-        }, []); // Cached elements
+        /** If data has duplicate entries, clone node */
+        if (refs.has(element)) {
+          element = element.cloneNode(true) as Element;
+        } else {
+          refs.add(element);
+        }
 
-        cur.forEach(key => {
-          // Remove orphaned cached elements
-          if (!cached.includes(key)) {
-            cache.get(key)?.remove();
-            cache.delete(key);
-          }
-        });
-      };
-    };
+        /**
+         * If child exists at current index replace with element,
+         * otherwise append element
+         */
+        const child = root.children.item(i);
+        if (child) {
+          root.replaceChild(element, child);
+        } else {
+          root.appendChild(element);
+        }
+      });
+    }
+  }
