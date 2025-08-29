@@ -1,9 +1,9 @@
-<div style="text-align: center">
+<div align="center">
   <h1>@chronocide/hyper</h1>
   <p>Tiny <b>TSX</b> DOM library.</p>
 </div>
 
-<div style="text-align: center">
+<div align="center">
   <a href="/LICENSE">
     <img alt="License AGPLv3" src="https://img.shields.io/badge/license-AGPLv3-blue.svg" />
   </a>
