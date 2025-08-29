@@ -1,4 +1,17 @@
-# hyper
+<div style="text-align: center">
+  <h1>@chronocide/hyper</h1>
+  <p>Tiny <b>TSX</b> DOM library.</p>
+</div>
+
+<div style="text-align: center">
+  <a href="/LICENSE">
+    <img alt="License AGPLv3" src="https://img.shields.io/badge/license-AGPLv3-blue.svg" />
+  </a>
+  <img alt="Bundle size" src="https://img.shields.io/bundlejs/size/%40chronocide%2Fhyper">
+  <a href="https://www.npmjs.com/package/@chronocide/hyper">
+    <img alt="NPM" src="https://img.shields.io/npm/v/@chronocide/hyper?label=npm">
+  </a>
+</div>
 
 Hyper is a tiny TypeScript library designed to ease working with the DOM. Hyper tries to be as simple as possible whilst maintaining good developer experience and currently features:
 
@@ -60,7 +73,7 @@ env.document = dom.window.document;
 
 Examples can be found in the test files, such as [hyper.spec.ts](/src/hyper.spec.ts).
 
-## Testing
+## Development
 
 Hyper uses `puppeteer` for browser testing and does not install Chrome by default. To run tests, create an `.env` file by running
 
