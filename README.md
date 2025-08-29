@@ -55,22 +55,21 @@ import { env } from '@chronocide/hyper';
 import { JSDOM } from 'jsdom';
 
 const dom = new JSDOM();
-
-env(dom.window.document);
+env.document = dom.window.document;
 ```
 
 Examples can be found in the test files, such as [hyper.spec.ts](/src/hyper.spec.ts).
 
 ## Testing
 
-Hyper uses `puppeteer` for browser testing and does not install Chrome by default. To run tests, create a `.env` file with `BROWSER_PATH` pointing to a browser executable:
-
-```env
-BROWSER_PATH=C:\Program Files (x86)\Google\Chrome\Application\chrome.exe
-```
-
-Run the tests using
+Hyper uses `puppeteer` for browser testing and does not install Chrome by default. To run tests, create an `.env` file by running
 
 ```sh
-npm test
+npm run env
+```
+
+**Note:** If you're running Linux, have Chrome installed in a non-standard location or wish to use a different browser, you can create the `.env` file yourself:
+
+```env
+BROWSER_PATH=<path_to_browser>
 ```

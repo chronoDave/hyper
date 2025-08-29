@@ -1,22 +1,19 @@
 import * as element from './lib/dom/element.ts';
+import Env from './lib/env.ts';
 
-const instance = new Map();
-if (typeof document !== 'undefined') instance.set('document', document);
-
-export const env = (document: Document) =>
-  instance.set('document', document);
+export const env = new Env();
 
 export default <T extends keyof HTMLElementTagNameMap>(tag: T) =>
-  element.html(instance.get('document'))(tag);
+  element.html(env.document)(tag);
 
 export const svg = <T extends keyof SVGElementTagNameMap>(tag: T) =>
-  element.svg(instance.get('document'))(tag);
+  element.svg(env.document)(tag);
 
 export const mathml = <T extends keyof MathMLElementEventMap>(tag: T) =>
-  element.mathml(instance.get('document'))(tag);
+  element.mathml(env.document)(tag);
 
 export const xml = (tag: string) =>
-  element.xml(instance.get('document'))(tag);
+  element.xml(env.document)(tag);
 
 export type { Child, HTMLVoidElementTagName } from './lib/dom/element.ts';
 

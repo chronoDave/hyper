@@ -10,7 +10,7 @@ import h, { env } from './hyper.ts';
 
 test('[hyper] does not error if document is set manually', () => {
   const { document } = dom();
-  env(document);
+  env.document = document;
 
   assert.doesNotThrow(h('div')());
 });
