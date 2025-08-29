@@ -19,6 +19,20 @@ const svg$1 = (document) => (tag) => (attributes) => (...children) => create(doc
 const mathml$1 = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/1998/Math/MathML", tag))(attributes)(children);
 const xml$1 = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/1999/xhtml", tag))(attributes)(children);
 
+class Env {
+  _document;
+  get document() {
+    if (!this._document) throw new Error("Missing document");
+    return this._document;
+  }
+  set document(document2) {
+    this._document = document2;
+  }
+  constructor() {
+    this._document = typeof document === "undefined" ? null : document;
+  }
+}
+
 var list = (component) => (root) => {
   const cache = /* @__PURE__ */ new Map();
   return (next) => {
@@ -46,12 +60,10 @@ var list = (component) => (root) => {
   };
 };
 
-const instance = /* @__PURE__ */ new Map();
-if (typeof document !== "undefined") instance.set("document", document);
-const env = (document2) => instance.set("document", document2);
-var hyper = (tag) => html(instance.get("document"))(tag);
-const svg = (tag) => svg$1(instance.get("document"))(tag);
-const mathml = (tag) => mathml$1(instance.get("document"))(tag);
-const xml = (tag) => xml$1(instance.get("document"))(tag);
+const env = new Env();
+var hyper = (tag) => html(env.document)(tag);
+const svg = (tag) => svg$1(env.document)(tag);
+const mathml = (tag) => mathml$1(env.document)(tag);
+const xml = (tag) => xml$1(env.document)(tag);
 
 export { hyper as default, env, list, mathml, svg, xml };

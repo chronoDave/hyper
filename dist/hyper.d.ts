@@ -3,10 +3,17 @@ type Attributes = Record<string, unknown>;
 type Child = Node | string;
 type HTMLVoidElementTagName = 'area' | 'base' | 'br' | 'col' | 'embed' | 'hr' | 'img' | 'input' | 'link' | 'meta' | 'source' | 'track' | 'wbr';
 
+declare class Env {
+    private _document;
+    get document(): Document;
+    set document(document: Document);
+    constructor();
+}
+
 type Component<T> = (data: T) => Element;
 declare const _default$1: <T>(component: Component<T>) => (root: Element) => (next: T[]) => void;
 
-declare const env: (document: Document) => Map<any, any>;
+declare const env: Env;
 declare const _default: <T extends keyof HTMLElementTagNameMap>(tag: T) => <P extends Attributes>(attributes?: P | undefined) => (...children: T extends HTMLVoidElementTagName ? never[] : Child[]) => HTMLElementTagNameMap[T];
 
 declare const svg: <T extends keyof SVGElementTagNameMap>(tag: T) => <P extends Attributes>(attributes?: P | undefined) => (...children: Child[]) => SVGElementTagNameMap[T];
