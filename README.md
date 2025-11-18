@@ -1,6 +1,6 @@
 <div align="center">
   <h1>@chronocide/hyper</h1>
-  <p>Tiny <b>TSX</b> DOM library.</p>
+  <p>Tiny DOM library.</p>
 </div>
 
 <div align="center">
