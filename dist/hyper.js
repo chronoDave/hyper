@@ -3,14 +3,13 @@ const maybe = (fn) => (x) => {
   return fn(x);
 };
 
-const attributes = (element) => (attributes2) => Object.entries(attributes2).forEach(([k, v]) => {
+const setAttributes = (element) => (attributes) => Object.entries(attributes).forEach(([k, v]) => {
   if (typeof v === "string") element.setAttribute(k, v);
   if (typeof v === "number") element.setAttribute(k, `${v}`);
   if (v === true) element.toggleAttribute(k, v);
 });
-
-const create = (element) => (attributes$1) => (children) => {
-  maybe(attributes(element))(attributes$1);
+const create = (element) => (attributes) => (children) => {
+  maybe(setAttributes(element))(attributes);
   element.append(...children);
   return element;
 };
@@ -18,22 +17,7 @@ const html = (document) => (tag) => (attributes) => (...children) => create(docu
 const svg$1 = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/2000/svg", tag))(attributes)(children);
 const mathml$1 = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/1998/Math/MathML", tag))(attributes)(children);
 const xml$1 = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/1999/xhtml", tag))(attributes)(children);
-
-class Env {
-  _document;
-  get document() {
-    if (!this._document) throw new Error("Missing document");
-    return this._document;
-  }
-  set document(document2) {
-    this._document = document2;
-  }
-  constructor() {
-    this._document = typeof document === "undefined" ? null : document;
-  }
-}
-
-var list = (component) => (root) => {
+const list$1 = (component) => (root) => {
   const cache = /* @__PURE__ */ new Map();
   return (next) => {
     const refs = /* @__PURE__ */ new WeakSet();
@@ -60,10 +44,25 @@ var list = (component) => (root) => {
   };
 };
 
+class Env {
+  _document;
+  get document() {
+    if (!this._document) throw new Error("Missing document");
+    return this._document;
+  }
+  set document(document2) {
+    this._document = document2;
+  }
+  constructor() {
+    this._document = typeof document === "undefined" ? null : document;
+  }
+}
+
 const env = new Env();
 var hyper = (tag) => html(env.document)(tag);
 const svg = (tag) => svg$1(env.document)(tag);
 const mathml = (tag) => mathml$1(env.document)(tag);
 const xml = (tag) => xml$1(env.document)(tag);
+const list = list$1;
 
 export { hyper as default, env, list, mathml, svg, xml };

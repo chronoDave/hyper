@@ -1,5 +1,7 @@
-import * as element from './lib/dom/element.ts';
+import * as element from './lib/element.ts';
 import Env from './lib/env.ts';
+
+export type { Child, HTMLVoidElementTagName, Attributes, Component } from './lib/element.ts';
 
 export const env = new Env();
 
@@ -15,9 +17,4 @@ export const mathml = <T extends keyof MathMLElementEventMap>(tag: T) =>
 export const xml = (tag: string) =>
   element.xml(env.document)(tag);
 
-export type { Child, HTMLVoidElementTagName } from './lib/dom/element.ts';
-
-export type { Attributes } from './lib/dom/set.ts';
-
-export { default as list } from './lib/dom/list.ts';
-export type { Component } from './lib/dom/list.ts';
+export const list = element.list;
