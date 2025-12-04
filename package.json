@@ -11,24 +11,26 @@
     "dist/**/*"
   ],
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=24.11.1"
   },
   "author": "Chronocide",
   "license": "AGPL-3.0-only",
   "scripts": {
-    "env": "node --experimental-strip-types --no-warnings scripts/env.ts",
-    "test": "node --env-file=.env --experimental-strip-types --no-warnings --test src/**/*.spec.ts",
+    "env": "node scripts/env.ts",
+    "test": "node --env-file=.env --test src/**/*.spec.ts",
     "build": "rollup -c",
     "preversion": "npm run test",
     "version": "npm run build && git add -A dist",
     "postversion": "git push && git push --tags"
   },
+  "optionalDependencies": {
+    "eslint": "^9.28.0",
+    "@chronocide/eslint-config": "github:chronoDave/eslint-config"
+  },
   "devDependencies": {
-    "@chronocide/eslint-config": "github:chronoDave/eslint-config",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.15.29",
     "esbuild": "^0.25.5",
-    "eslint": "^9.28.0",
     "jsdom": "^26.1.0",
     "puppeteer-core": "^24.14.0",
     "rollup": "^4.42.0",

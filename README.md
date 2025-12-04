@@ -1,6 +1,6 @@
 <div align="center">
   <h1>@chronocide/hyper</h1>
-  <p>Tiny DOM library.</p>
+  <p>Tiny DOM library</p>
 </div>
 
 <div align="center">
@@ -13,10 +13,13 @@
   </a>
 </div>
 
-Hyper is a tiny TypeScript library designed to ease working with the DOM. Hyper tries to be as simple as possible whilst maintaining good developer experience and currently features:
+---
 
- - Relies on native API's (DOM)
- - All state is stored within the DOM[*](#exception), no vDOM
+`hyper` is a tiny TypeScript library designed to ease working with the DOM. `hyper` tries to be as simple as possible whilst maintaining good developer experience and currently features:
+
+- Simple wrapper around native API's (DOM)
+- No vDOM, all state is stored within the DOM[*](#exception)
+- List caching
 
 <p id="exception"><code>document</code> is stored internally, this prevents binding it for every single call.</p>
 
@@ -28,7 +31,7 @@ npm i @chronocide/hyper
 
 ## Usage
 
-```TS
+```ts
 import h from '@chronocide/hyper';
 
 const img = h('img')({ src: '/cat.png' })(); // HTMLImageElement
@@ -38,30 +41,31 @@ document.body.appendChild(img);
 
 ### List
 
-Components are cached and only updated if the data is changed, order does not matter. Data does not need to be unique, duplicate nodes are cloned.
+List items can be cached using `list`, only updated if the data is changed; order does not matter. Data does not need to be unique, as duplicate nodes are cloned.
 
-```TS
+```ts
 import type { Component } from '@chronocide/hyper';
-import { list } from '@chronocide/hyper';
+
+import h, { list } from '@chronocide/hyper';
 
 type Planet = { id: string; name: string };
 
-const data: Planet[] = [
+const planets: Planet[] = [
   { id: 'jupiter', name: 'Jupiter' },
   { id: 'mars', name: 'Mars' },
   { id: 'pluto', name: 'Pluto' }
 ];
 
-const ul = h('ul')()();
+const ul = h('ul')()(); // <ul></ul>
 const component: Component<Planet> = planet => h('li')()(planet.name);
 
 const update = list<Planet>(component)(ul);
-update(data);
+update(planets); // <ul><li>Jupiter</li><li>Mars</li><li>Pluto</li></ul>
 ```
 
-### Testing
+## Testing
 
-Hyper relies on the DOM, which may not always be available. In those cases, it's possible to set a custom DOM using `env`:
+`hyper` relies on the DOM, which may not always be available. In those cases, it's possible to set a custom DOM using `env`:
 
 ```TS
 import { env } from '@chronocide/hyper';
@@ -75,7 +79,7 @@ Examples can be found in the test files, such as [hyper.spec.ts](/src/hyper.spec
 
 ## Development
 
-Hyper uses `puppeteer` for browser testing and does not install Chrome by default. To run tests, create an `.env` file by running
+`hyper` uses `puppeteer` for browser testing and does not install Chrome by default. To run tests, create an `.env` file using:
 
 ```sh
 npm run env
