@@ -8,7 +8,7 @@ export default () => {
 
   const ul = h('ul')()();
   const update = list<number>(n => h('li')()(`${n}`))(ul);
-  update([1, 2, 3]);
+  update([1, 2, 2, 3]);
 
   return { ul, update };
 };

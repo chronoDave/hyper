@@ -43,23 +43,22 @@ document.body.appendChild(img);
 
 List items can be cached using `list`, only updated if the data is changed; order does not matter. Data does not need to be unique, as duplicate nodes are cloned.
 
-```ts
-import type { Component } from '@chronocide/hyper';
+**Note**, `list` only supports `string` and `number` type.
 
+```ts
 import h, { list } from '@chronocide/hyper';
 
 type Planet = { id: string; name: string };
 
-const planets: Planet[] = [
-  { id: 'jupiter', name: 'Jupiter' },
-  { id: 'mars', name: 'Mars' },
-  { id: 'pluto', name: 'Pluto' }
-];
+const planets = new Map<string, Planet>();
+planets.add('jupiter', { id: 'jupiter', name: 'Jupiter' });
+planets.add('mars', { id: 'mars', name: 'Mars' });
+planets.add('pluto', { id: 'pluto', name: 'Pluto' });
 
 const ul = h('ul')()(); // <ul></ul>
-const component: Component<Planet> = planet => h('li')()(planet.name);
+const render = (id: string) => h('li')()(planets.get(id)?.name ?? '-');
 
-const update = list<Planet>(component)(ul);
+const update = list(render)(ul);
 update(planets); // <ul><li>Jupiter</li><li>Mars</li><li>Pluto</li></ul>
 ```
 

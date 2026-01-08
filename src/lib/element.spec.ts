@@ -108,7 +108,7 @@ test('[element.xml] creates XML element', () => {
 test('[element.list] creates list', () => {
   const { ul } = struct();
 
-  assert.equal(ul.children.length, 3, 'has children');
+  assert.equal(ul.children.length, 4, 'has children');
   assert.equal(ul.children.item(0)?.textContent, '1', 'renders child');
 });
 
@@ -138,7 +138,7 @@ test('[element.list] caches children', () => {
   const children = Array.from(ul.children);
 
   update([1, 2, 3, 4]);
-  assert.equal(children[2], ul.children[2], 'add');
+  assert.equal(children[1], ul.children[1], 'add');
 
   update([1, 2]);
   assert.equal(children[1], ul.children[1], 'remove');

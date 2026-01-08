@@ -97,7 +97,7 @@ export const xml = (document: Document) =>
  * 
  * @see https://github.com/chronoDave/hyper?tab=readme-ov-file#list
  */
-export const list = <T>(render: (data: T, i: number) => Element) =>
+export const list = <T extends string | number>(render: (data: T, i: number) => Element) =>
   (root: Element) => {
     const cache = new Map<T, Element>();
     
