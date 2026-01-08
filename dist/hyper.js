@@ -17,7 +17,7 @@ const html = (document) => (tag) => (attributes) => (...children) => create(docu
 const svg$1 = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/2000/svg", tag))(attributes)(children);
 const mathml$1 = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/1998/Math/MathML", tag))(attributes)(children);
 const xml$1 = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/1999/xhtml", tag))(attributes)(children);
-const list$1 = (component) => (root) => {
+const list$1 = (render) => (root) => {
   const cache = /* @__PURE__ */ new Map();
   return (next) => {
     const refs = /* @__PURE__ */ new WeakSet();
@@ -27,7 +27,7 @@ const list$1 = (component) => (root) => {
       let element = cache.get(data);
       if (element === child) return;
       if (!element) {
-        element = component(data);
+        element = render(data, i);
         cache.set(data, element);
       }
       if (refs.has(element)) {
