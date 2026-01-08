@@ -1,7 +1,7 @@
 import * as element from './lib/element.ts';
 import Env from './lib/env.ts';
 
-export type { Child, HTMLVoidElementTagName, Attributes, Component } from './lib/element.ts';
+export type { Child, HTMLVoidElementTagName, Attributes } from './lib/element.ts';
 
 export const env = new Env();
 

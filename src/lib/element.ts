@@ -92,14 +92,12 @@ export const xml = (document: Document) =>
       (...children: Child[]) =>
         create(document.createElementNS('http://www.w3.org/1999/xhtml', tag))(attributes)(children);
 
-export type Component<T> = (data: T) => Element;
-
 /**
  * Create cached list element
  * 
  * @see https://github.com/chronoDave/hyper?tab=readme-ov-file#list
  */
-export const list = <T>(component: Component<T>) =>
+export const list = <T>(render: (data: T, i: number) => Element) =>
   (root: Element) => {
     const cache = new Map<T, Element>();
     
@@ -118,7 +116,7 @@ export const list = <T>(component: Component<T>) =>
 
         /** Create and cache element */
         if (!element) {
-          element = component(data);
+          element = render(data, i);
           cache.set(data, element);
         }
 

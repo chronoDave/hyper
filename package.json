@@ -17,7 +17,7 @@
   "license": "AGPL-3.0-only",
   "scripts": {
     "env": "node scripts/env.ts",
-    "test": "node --env-file=.env --test src/**/*.spec.ts",
+    "test": "node --env-file=.env --test src/**/*.spec.ts && tsc --noEmit",
     "build": "rollup -c",
     "preversion": "npm run test",
     "version": "npm run build && git add -A dist",
