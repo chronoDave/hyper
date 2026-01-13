@@ -17,18 +17,19 @@ const html = (document) => (tag) => (attributes) => (...children) => create(docu
 const svg$1 = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/2000/svg", tag))(attributes)(children);
 const mathml$1 = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/1998/Math/MathML", tag))(attributes)(children);
 const xml$1 = (document) => (tag) => (attributes) => (...children) => create(document.createElementNS("http://www.w3.org/1999/xhtml", tag))(attributes)(children);
-const list$1 = (render) => (root) => {
+const list$1 = (render) => (key) => (root) => {
   const cache = /* @__PURE__ */ new Map();
   return (next) => {
     const refs = /* @__PURE__ */ new WeakSet();
     while (root.children.length > next.length) root.lastChild?.remove();
-    next.forEach((data, i) => {
+    next.forEach((x, i) => {
+      const k = key(x);
       const child = root.children.item(i);
-      let element = cache.get(data);
+      let element = cache.get(k);
       if (element === child) return;
       if (!element) {
-        element = render(data, i);
-        cache.set(data, element);
+        element = render(x, i, next);
+        cache.set(k, element);
       }
       if (refs.has(element)) {
         element = element.cloneNode(true);
