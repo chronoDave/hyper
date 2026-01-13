@@ -41,25 +41,25 @@ document.body.appendChild(img);
 
 ### List
 
-List items can be cached using `list`, only updated if the data is changed; order does not matter. Data does not need to be unique, as duplicate nodes are cloned.
-
-**Note**, `list` only supports `string` and `number` type.
+Keeping track of children within a list can be tedious, especially if using immutable data. `list` caches elements based on keys and compares each data entry, only updating the child i the data has changed. Keys do not need to be unique, duplicate elements are cloned.
 
 ```ts
 import h, { list } from '@chronocide/hyper';
 
 type Planet = { id: string; name: string };
 
-const planets = new Map<string, Planet>();
-planets.add('jupiter', { id: 'jupiter', name: 'Jupiter' });
-planets.add('mars', { id: 'mars', name: 'Mars' });
-planets.add('pluto', { id: 'pluto', name: 'Pluto' });
-
 const ul = h('ul')()(); // <ul></ul>
-const render = (id: string) => h('li')()(planets.get(id)?.name ?? '-');
+const render = (planet: Planet) => h('li')({ id: planet.id })(planet.name);
+const key = (planet: Planet) => planet.id;
+const update = list<Planet>(render)(key)(ul);
 
-const update = list(render)(ul);
-update(planets); // <ul><li>Jupiter</li><li>Mars</li><li>Pluto</li></ul>
+const planets: Planet[] = [
+  { id: 'jupiter', name: 'Jupiter' },
+  { id: 'mars', name: 'Mars' },
+  { id: 'pluto', name: 'Pluto' }
+];
+
+update(planets); // <ul><li id="jupiter">Jupiter</li><li id="mars">Mars</li><li id="pluto">Pluto</li></ul>
 ```
 
 ## Testing

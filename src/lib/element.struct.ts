@@ -7,7 +7,7 @@ export default () => {
   const h = html(document);
 
   const ul = h('ul')()();
-  const update = list<number>(n => h('li')()(`${n}`))(ul);
+  const update = list<number>(n => h('li')()(`${n}`))(i => `${i}`)(ul);
   update([1, 2, 2, 3]);
 
   return { ul, update };

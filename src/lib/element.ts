@@ -93,46 +93,49 @@ export const xml = (document: Document) =>
         create(document.createElementNS('http://www.w3.org/1999/xhtml', tag))(attributes)(children);
 
 /**
- * Create cached list element
+ * Create cached element container
  * 
  * @see https://github.com/chronoDave/hyper?tab=readme-ov-file#list
  */
-export const list = <T extends string | number>(render: (data: T, i: number) => Element) =>
-  (root: Element) => {
-    const cache = new Map<T, Element>();
-    
-    return (next: T[]): void => {
-      const refs = new WeakSet();
+export const list = <T>(render: (x: T, i: number, arr: T[]) => Element) =>
+  (key: (x: T) => string) =>
+    (root: Element) => {
+      const cache = new Map<string, Element>();
 
-      /** Remove excess children in reverse order */
-      while (root.children.length > next.length) root.lastChild?.remove();
+      return (next: T[]): void => {
+        const refs = new WeakSet();
 
-      next.forEach((data, i) => {
-        const child = root.children.item(i);
-        let element = cache.get(data);
+        /** Remove excess children in reverse order */
+        while (root.children.length > next.length) root.lastChild?.remove();
 
-        /** If data is cached and unchanged, return */
-        if (element === child) return; 
+        next.forEach((x, i) => {
+          const k = key(x);
+          const child = root.children.item(i);
 
-        /** Create and cache element */
-        if (!element) {
-          element = render(data, i);
-          cache.set(data, element);
-        }
+          let element = cache.get(k);
 
-        /** If data has duplicate entries, clone node */
-        if (refs.has(element)) {
-          element = element.cloneNode(true) as Element;
-        } else {
-          refs.add(element);
-        }
+          /** If data is cached and unchanged, return */
+          if (element === child) return;
 
-        /** If child exists at current index replace with element, otherwise append element */
-        if (child) {
-          root.replaceChild(element, child);
-        } else {
-          root.appendChild(element);
-        }
-      });
+          /** Create and cache element */
+          if (!element) {
+            element = render(x, i, next);
+            cache.set(k, element);
+          }
+
+          /** If data has duplicate entries, clone node */
+          if (refs.has(element)) {
+            element = element.cloneNode(true) as Element;
+          } else {
+            refs.add(element);
+          }
+
+          /** If child exists at current index replace with element, otherwise append element */
+          if (child) {
+            root.replaceChild(element, child);
+          } else {
+            root.appendChild(element);
+          }
+        });
+      };
     };
-  };
