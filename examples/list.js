@@ -63,20 +63,23 @@ const nouns = [
 const label = () => `${random(adjectives)} ${random(colours)} ${random(nouns)}`;
 
 const data = Array
-  .from({ length: 1000 })
+  .from({ length: 100 })
   .map(label);
 
 const ul = h('ul')()();
-const update = list((x, i) => `${i}-${x}`)(h('li')())(ul);
+const li = x => h('li')()(x);
+const update = list(li)(ul);
 update(data);
 
 const button = h('button')({ type: 'button' })('Update every 10th row');
 button.addEventListener('click', () => {
-  for (let i = 0; i < 1000; i += 10) {
-    data[i] = label();
+  const next = [...data];
+
+  for (let i = 0; i < data.length; i += 10) {
+    next[i] = label();
   }
 
-  update(data);
+  update(next);
 }, { passive: true });
 
 document.body.append(button, ul);

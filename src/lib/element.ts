@@ -1,6 +1,17 @@
-import { maybe } from './fn.ts';
+import type { Cell, CellOptions } from './virtual.ts';
+import type { Json } from './json.ts';
+import type Env from './env.ts';
+
+import { debounce, maybe } from './fn.ts';
+import { cells, height, view } from './virtual.ts';
+import * as array from './array.ts';
+import { clone, equals } from './json.ts';
 
 export type Attributes = Record<string, unknown>;
+
+export type HTMLAttributes = Attributes & {
+  style?: Record<string, string>;
+};
 
 /**
  * Set element attributes.
@@ -13,7 +24,7 @@ export type Attributes = Record<string, unknown>;
  * 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute
  * */
-export const setAttributes = (element: Element) =>
+export const set = (element: Element) =>
   (attributes: Attributes): void => Object
     .entries(attributes)
     .forEach(([k, v]) => {
@@ -22,12 +33,20 @@ export const setAttributes = (element: Element) =>
       if (v === true) element.toggleAttribute(k, v);
     });
 
+export const style = (element: HTMLElement) =>
+  (style: Record<string, string>): void => Object
+    .entries(style)
+    .forEach(([k, v]) => {
+      element.style.setProperty(k, v);
+    });
+
 export type Child = Node | string;
 
 const create = <T extends Element>(element: T) =>
   (attributes?: Attributes) =>
     (children: Child[]): T => {
-      maybe(setAttributes(element))(attributes);
+      maybe(set(element))(attributes);
+
       element.append(...children);
 
       return element;
@@ -53,89 +72,152 @@ export type HTMLVoidElementTagName =
  * 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
  */
-export const html = (document: Document) =>
+export const html = (env: Env) =>
   <T extends keyof HTMLElementTagNameMap>(tag: T) =>
-    <P extends Attributes>(attributes?: P) =>
-      (...children: T extends HTMLVoidElementTagName ? never[] : Child[]) =>
-        create(document.createElement(tag))(attributes)(children);
+    <P extends HTMLAttributes>(attributes?: P) =>
+      (...children: T extends HTMLVoidElementTagName ? never[] : Child[]) => {
+        const root = create(env.document.createElement(tag))(attributes)(children);
+        maybe(style(root))(attributes?.style);
+
+        return root;
+      };
 
 /**
  * Create SVG element
  * 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS
 */
-export const svg = (document: Document) =>
+export const svg = (env: Env) =>
   <T extends keyof SVGElementTagNameMap>(tag: T) =>
     <P extends Attributes>(attributes?: P) =>
       (...children: Child[]) =>
-        create(document.createElementNS('http://www.w3.org/2000/svg', tag))(attributes)(children);
+        create(env.document.createElementNS('http://www.w3.org/2000/svg', tag))(attributes)(children);
 
 /**
  * Create MathML element
  * 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS
 */
-export const mathml = (document: Document) =>
+export const mathml = (env: Env) =>
   <T extends keyof MathMLElementEventMap>(tag: T) =>
     <P extends Attributes>(attributes?: P) =>
       (...children: Child[]) =>
-        create(document.createElementNS('http://www.w3.org/1998/Math/MathML', tag))(attributes)(children);
+        create(env.document.createElementNS('http://www.w3.org/1998/Math/MathML', tag))(attributes)(children);
 
 /**
  * Create XML element
  * 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS
 */
-export const xml = (document: Document) =>
+export const xml = (env: Env) =>
   (tag: string) =>
     <P extends Attributes>(attributes?: P) =>
       (...children: Child[]) =>
-        create(document.createElementNS('http://www.w3.org/1999/xhtml', tag))(attributes)(children);
+        create(env.document.createElementNS('http://www.w3.org/1999/xhtml', tag))(attributes)(children);
 
 /**
- * Create cached element container
+ * Create cached element container.
+ * 
+ * `list` only support the following types:
+ * 
+ * - `string`
+ * - `number`
+ * - `boolean`
+ * - `null`
+ * - `array`
+ * - `object`
+ * 
+ * Where `array` and `object` can only contain aformentioned types.
  * 
  * @see https://github.com/chronoDave/hyper?tab=readme-ov-file#list
  */
-export const list = <T>(render: (x: T, i: number, arr: T[]) => Element) =>
-  (key: (x: T) => string) =>
-    (root: Element) => {
-      const cache = new Map<string, Element>();
+export const list = <T extends Json>(render: (x: T, i: number, arr: T[]) => Element) =>
+  (root: Element) => {
+    let cache: T[] = [];
 
-      return (next: T[]): void => {
-        const refs = new WeakSet();
+    return (next: T[]): void => {
+      /** Remove excess children in reverse order */
+      while (root.children.length > next.length) root.lastChild?.remove();
 
-        /** Remove excess children in reverse order */
-        while (root.children.length > next.length) root.lastChild?.remove();
+      next.forEach((x, i) => {
+        if (i < cache.length && equals(x)(cache[i])) return;
 
-        next.forEach((x, i) => {
-          const k = key(x);
-          const child = root.children.item(i);
+        const element = render(x, i, next);
+        const child = root.children.item(i);
 
-          let element = cache.get(k);
+        if (child) {
+          root.replaceChild(element, child);
+        } else {
+          root.appendChild(element);
+        }
+      });
 
-          /** If data is cached and unchanged, return */
-          if (element === child) return;
-
-          /** Create and cache element */
-          if (!element) {
-            element = render(x, i, next);
-            cache.set(k, element);
-          }
-
-          /** If data has duplicate entries, clone node */
-          if (refs.has(element)) {
-            element = element.cloneNode(true) as Element;
-          } else {
-            refs.add(element);
-          }
-
-          /** If child exists at current index replace with element, otherwise append element */
-          if (child) {
-            root.replaceChild(element, child);
-          } else {
-            root.appendChild(element);
-          }
-        });
-      };
+      cache = clone(next);
     };
+  };
+
+/**
+ * Create virtualised element container
+ * 
+ * @see https://github.com/chronoDave/hyper?tab=readme-ov-file#virtual
+*/
+export const virtual = (env: Env) =>
+  <T>(cell: CellOptions<T>) =>
+    (render: (i: number) => HTMLElement) =>
+      (root: HTMLElement) => {
+        style(root)({
+          'position': 'relative',
+          'max-height': '100%',
+          'overflow-y': 'scroll'
+        });
+
+        let cache: Cell[] = [];
+        let state: T[] = [];
+
+        const update = debounce(env)((full?: boolean) => {
+          if (full) cache = cells(cell)({ width: root.scrollWidth })(state);
+
+          const [min, max] = view({
+            height: root.getBoundingClientRect().height,
+            y: Math.floor(root.scrollTop)
+          })(cache);
+
+          const spacer = html(env)('div')({
+            'aria-hidden': 'true',
+            'style': {
+              'width': '100%',
+              'height': `${height(cache)}px`,
+              'z-index': '-1'
+            }
+          })();
+
+          root.replaceChildren(...cache.slice(min, max + 1).map(cell => {
+            const child = render(cell.i);
+            style(child)({
+              position: 'absolute',
+              transform: `translate(${cell.x}px, ${cell.y}px)`,
+              width: `${cell.width}px`,
+              height: `${cell.height}px`
+            });
+
+            return child;
+          }), spacer);
+        });
+
+        root.addEventListener('scroll', () => update(false), { passive: true });
+        root.addEventListener('resize', () => update(true), { passive: true });
+
+        return {
+          update: (next: T[]) => {
+            state = next;
+
+            update(true);
+          },
+          scrollTo: (i: number) => {
+            const y = array.get(cache)(i)?.y;
+            if (typeof y !== 'number') return;
+
+            root.scrollTop = y;
+          }
+        };
+      };

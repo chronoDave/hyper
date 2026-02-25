@@ -1,20 +1,20 @@
-import * as element from './lib/element.ts';
 import Env from './lib/env.ts';
+import * as element from './lib/element.ts';
 
-export type { Child, HTMLVoidElementTagName, Attributes } from './lib/element.ts';
+export type {
+  Child,
+  HTMLVoidElementTagName,
+  Attributes
+} from './lib/element.ts';
+export type { CellOptions } from './lib/virtual.ts';
+export type { Json } from './lib/json.ts';
 
 export const env = new Env();
 
-export default <T extends keyof HTMLElementTagNameMap>(tag: T) =>
-  element.html(env.document)(tag);
+export default element.html(env);
 
-export const svg = <T extends keyof SVGElementTagNameMap>(tag: T) =>
-  element.svg(env.document)(tag);
-
-export const mathml = <T extends keyof MathMLElementEventMap>(tag: T) =>
-  element.mathml(env.document)(tag);
-
-export const xml = (tag: string) =>
-  element.xml(env.document)(tag);
-
+export const svg = element.svg(env);
+export const mathml = element.mathml(env);
+export const xml = element.xml(env);
 export const list = element.list;
+export const virtual = element.virtual(env);

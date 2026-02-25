@@ -41,25 +41,78 @@ document.body.appendChild(img);
 
 ### List
 
-Keeping track of children within a list can be tedious, especially if using immutable data. `list` caches elements based on keys and compares each data entry, only updating the child i the data has changed. Keys do not need to be unique, duplicate elements are cloned.
+Keeping track of children within a list can be tedious. `list` caches state and compares each entry, only updating children if the data has changed.
+
+**Note**: `list` only supports the following types:
+- `string`
+- `number`
+- `boolean`
+- `null`
+- `array`
+- `object`
+
+Where `array` and `object` can only contain aforementioned types.
 
 ```ts
 import h, { list } from '@chronocide/hyper';
+
+const ul = h('ul')()(); // <ul></ul>
+const li = (x: string) => h('li')()(x);
+const update = list(li)(ul);
+
+/**
+ * <ul>
+ *  <li>a</li> (render)
+ *  <li>b</li> (render)
+ *  <li>c</li> (render)
+ * </ul>
+ */
+update(['a', 'b', 'c']);
+
+/**
+ * <ul>
+ *  <li>a</li>
+ *  <li>b</li>
+ *  <li>c</li>
+ *  <li>d</li> (render)
+ * </ul>
+ */
+update(['a', 'b', 'c', 'd']);
+
+/**
+ * <ul>
+ *  <li>a</li>
+ *  <li>b</li> (render)
+ *  <li>c</li>
+ * </ul>
+ */
+update(['a', 'c', 'c']);
+```
+
+### Virtual
+
+Virtualisation is a technique that improves list performance by limiting the amount of children rendered. By only rendering elements that are visible within a defined viewport, the size of the DOM can be significantly decreased.
+
+`virtual` adds the neccesary inline styles and even listeners to make virtualisation possible, but does not add `aria` properties.
+
+```ts
+import h, { virtual } from '@chronocide/hyper';
 
 type Planet = { id: string; name: string };
 
 const ul = h('ul')()(); // <ul></ul>
 const render = (planet: Planet) => h('li')({ id: planet.id })(planet.name);
-const key = (planet: Planet) => planet.id;
-const update = list<Planet>(render)(key)(ul);
+const { update, scrollTo } = virtual(render)(ul);
 
 const planets: Planet[] = [
   { id: 'jupiter', name: 'Jupiter' },
   { id: 'mars', name: 'Mars' },
-  { id: 'pluto', name: 'Pluto' }
+  { id: 'pluto', name: 'Pluto' },
+  // ...
 ];
 
 update(planets); // <ul><li id="jupiter">Jupiter</li><li id="mars">Mars</li><li id="pluto">Pluto</li></ul>
+scrollTo(30); // Scroll to 30th item
 ```
 
 ## Testing

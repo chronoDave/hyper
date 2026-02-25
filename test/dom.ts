@@ -1,10 +1,15 @@
 import { JSDOM } from 'jsdom';
 
-export default (html?: string) => {
-  const dom = new JSDOM(html ?? '');
+export type DomOptions = {
+  html?: string;
+  visual?: boolean;
+};
+
+export default (options?: DomOptions) => {
+  const dom = new JSDOM(options?.html ?? '', { pretendToBeVisual: options?.visual });
 
   return {
-    window: dom.window,
+    window: dom.window as unknown as Window,
     document: dom.window.document
   };
 };
