@@ -1,6 +1,6 @@
 type CellOptions<T> = {
     /** If empty, equal to container width */
-    width?: number | ((data: T, i: number, arr: T[]) => number | null);
+    width?: number | ((data: T, i: number, arr: T[]) => number | null) | null;
     /** If true, cells do not fill container width */
     gap?: boolean;
     height: number | ((data: T, i: number, arr: T[]) => number);
@@ -34,7 +34,10 @@ declare const svg: <T extends keyof SVGElementTagNameMap>(tag: T) => <P extends 
 declare const mathml: <T extends keyof MathMLElementEventMap>(tag: T) => <P extends Attributes>(attributes?: P) => (...children: Child[]) => MathMLElement;
 declare const xml: (tag: string) => <P extends Attributes>(attributes?: P) => (...children: Child[]) => HTMLElement;
 declare const list: <T extends Json>(render: (x: T, i: number, arr: T[]) => Element) => (root: Element) => (next: T[]) => void;
-declare const virtual: <T>(cell: CellOptions<T>) => (render: (i: number) => HTMLElement) => (root: HTMLElement) => {
+declare const virtual: <T>(cell: CellOptions<T>) => (render: (x: T, i: {
+    real: number;
+    virtual: number;
+}, arr: T[]) => HTMLElement) => (root: HTMLElement) => {
     update: (next: T[]) => void;
     scrollTo: (i: number) => void;
 };

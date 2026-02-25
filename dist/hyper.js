@@ -73,7 +73,9 @@ const bisectRight = (arr) => (n) => {
 const cells = (cell) => (container) => (data) => fill(data.length)((i, arr) => {
   const prev = get(arr)(i - 1);
   const height2 = typeof cell.height === "number" ? cell.height : cell.height(data[i], i, data);
-  let width = typeof cell.width === "number" ? cell.width : cell.width?.(data[i], i, data) ?? container.width;
+  let width = container.width;
+  if (typeof cell.width === "number") width = cell.width;
+  if (typeof cell.width === "function") width = cell.width(data[i], i, data) ?? container.width;
   if (!cell.gap) {
     const rows = Math.max(1, Math.floor(container.width / width));
     width = Math.floor(container.width / rows);
@@ -190,8 +192,8 @@ const virtual$1 = (env) => (cell) => (render) => (root) => {
         "z-index": "-1"
       }
     })();
-    root.replaceChildren(...cache.slice(min, max + 1).map((cell2) => {
-      const child = render(cell2.i);
+    root.replaceChildren(...cache.slice(min, max + 1).map((cell2, j) => {
+      const child = render(state[cell2.i], { real: cell2.i, virtual: j }, state);
       style(child)({
         position: "absolute",
         transform: `translate(${cell2.x}px, ${cell2.y}px)`,

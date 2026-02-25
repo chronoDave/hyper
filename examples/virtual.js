@@ -13,7 +13,7 @@ document.body.append(list);
 const { update, scrollTo } = virtual({
   width: 200,
   height: 250
-})(i => h('li')({ 'data-index': i })(`${i}`))(list);
+})((_, i) => h('li')({ 'data-index': i.real })(`${i.virtual} (${i.real})`))(list);
 
 update(Array.from({ length: 100 }));
 

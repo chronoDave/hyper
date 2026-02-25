@@ -10,7 +10,7 @@ export type Cell = {
 
 export type CellOptions<T> = {
   /** If empty, equal to container width */
-  width?: number | ((data: T, i: number, arr: T[]) => number | null);
+  width?: number | ((data: T, i: number, arr: T[]) => number | null) | null;
   /** If true, cells do not fill container width */
   gap?: boolean;
   height: number | ((data: T, i: number, arr: T[]) => number);
@@ -24,9 +24,9 @@ export const cells = <T>(cell: CellOptions<T>) =>
         cell.height :
         cell.height(data[i], i, data);
 
-      let width = typeof cell.width === 'number' ?
-        cell.width :
-        cell.width?.(data[i], i, data) ?? container.width;
+      let width = container.width;
+      if (typeof cell.width === 'number') width = cell.width;
+      if (typeof cell.width === 'function') width = cell.width(data[i], i, data) ?? container.width;
 
       if (!cell.gap) {
         const rows = Math.max(1, Math.floor(container.width / width));

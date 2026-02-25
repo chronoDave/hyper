@@ -163,7 +163,7 @@ export const list = <T extends Json>(render: (x: T, i: number, arr: T[]) => Elem
 */
 export const virtual = (env: Env) =>
   <T>(cell: CellOptions<T>) =>
-    (render: (i: number) => HTMLElement) =>
+    (render: (x: T, i: { real: number; virtual: number }, arr: T[]) => HTMLElement) =>
       (root: HTMLElement) => {
         style(root)({
           'position': 'relative',
@@ -191,8 +191,8 @@ export const virtual = (env: Env) =>
             }
           })();
 
-          root.replaceChildren(...cache.slice(min, max + 1).map(cell => {
-            const child = render(cell.i);
+          root.replaceChildren(...cache.slice(min, max + 1).map((cell, j) => {
+            const child = render(state[cell.i], { real: cell.i, virtual: j }, state);
             style(child)({
               position: 'absolute',
               transform: `translate(${cell.x}px, ${cell.y}px)`,
