@@ -26,14 +26,14 @@ export const cells = <T>(cell: CellOptions<T>) =>
       if (typeof cell.width === 'number') width = cell.width;
       if (typeof cell.width === 'function') width = cell.width(data[i], i, data) ?? container.width;
 
-      let height = width;
-      if (typeof cell.height === 'number') height = cell.height;
-      if (typeof cell.height === 'function') height = cell.height(data[i], i, data) ?? width;
-
       if (!cell.gap) {
         const rows = Math.max(1, Math.floor(container.width / width));
         width = Math.floor(container.width / rows); // Prevent float math
       }
+
+      let height = width;
+      if (typeof cell.height === 'number') height = cell.height;
+      if (typeof cell.height === 'function') height = cell.height(data[i], i, data) ?? width;
 
       let x = (prev?.x ?? 0) + (prev?.width ?? 0);
       let y = prev?.y ?? 0;
