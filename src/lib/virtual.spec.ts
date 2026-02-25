@@ -63,12 +63,12 @@ test('[virtual.cells]', t => {
     );
     assert.deepEqual(
       cells[cells.length - 1],
-      { i: 99, width: 16, height: 15, x: 0, y: 1985 },
+      { i: 99, width: 16, height: 16, x: 0, y: 2034 },
       'last'
     );
     assert.deepEqual(
       cells[13],
-      { i: 13, width: 16, height: 15, x: 0, y: 265 },
+      { i: 13, width: 16, height: 16, x: 0, y: 271 },
       'random'
     );
   });
