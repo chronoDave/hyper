@@ -204,7 +204,7 @@ const virtual$1 = (env) => (cell) => (render) => (root) => {
     }), spacer);
   });
   root.addEventListener("scroll", () => update(false), { passive: true });
-  root.addEventListener("resize", () => update(true), { passive: true });
+  env.window.addEventListener("resize", () => update(true), { passive: true });
   return {
     update: (next) => {
       state = next;
