@@ -4,7 +4,7 @@ import { JSDOM } from 'jsdom';
 import fsp from 'fs/promises';
 
 import dom from '../../test/dom.ts';
-import browser from '../../test/browser.ts';
+import puppeteer from '../../test/browser.ts';
 
 import Env from './env.ts';
 import * as element from './element.ts';
@@ -161,7 +161,7 @@ test('[element.list]', t => {
 
 test('[element.virtual]', async t => {
   const script = await fsp.readFile(new URL('element.struct.js', import.meta.url), 'utf-8');
-  const { page, close } = await browser(script);
+  const { page, close } = await puppeteer(script);
   await page.waitForSelector('ul div'); // Wait for update
 
   try {
@@ -232,6 +232,15 @@ test('[element.virtual]', async t => {
 
       const li = await page.waitForSelector('li[data-index="30"]');
       assert.ok(li);
+    });
+
+    await t.test('renders children on resize', async () => {
+      const before = await page.$$eval('li', lis => lis.length);
+      await page.setViewport({ width: 1000, height: 1000 });
+      await new Promise(resolve => setTimeout(resolve, 1));
+      const after = await page.$$eval('li', lis => lis.length);
+
+      assert.notEqual(before, after);
     });
   } finally {
     await close();

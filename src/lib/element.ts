@@ -205,7 +205,7 @@ export const virtual = (env: Env) =>
         });
 
         root.addEventListener('scroll', () => update(false), { passive: true });
-        root.addEventListener('resize', () => update(true), { passive: true });
+        env.window.addEventListener('resize', () => update(true), { passive: true });
 
         return {
           update: (next: T[]) => {

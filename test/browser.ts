@@ -1,5 +1,5 @@
 import esbuild from 'esbuild';
-import puppeteer, { ElementHandle } from 'puppeteer-core';
+import { launch } from 'puppeteer-core';
 
 export type BrowserOptions = {
   show?: boolean;
@@ -16,10 +16,11 @@ export default async (script: string, options?: BrowserOptions) => {
       minify: true,
       outfile: 'hyper.js'
     }),
-    puppeteer.launch({ executablePath: process.env.BROWSER_PATH, headless: !options?.show })
+    launch({ executablePath: process.env.BROWSER_PATH, headless: !options?.show })
   ]);
 
   const page = await browser.newPage();
+  await page.setViewport({ width: 500, height: 500 });
 
   await page.setContent([
     '<!DOCTYPE html><html><head><style>*, *::before, *::after { box-sizing: border-box; padding: 0; margin: 0; }</style></head><body>',

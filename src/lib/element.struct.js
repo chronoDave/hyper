@@ -1,12 +1,7 @@
 /* eslint-disable import-x/unambiguous */
 const { default: h, virtual } = window.hyper;
 
-const list = h('ul')({
-  style: {
-    width: '500px',
-    height: '500px'
-  }
-})();
+const list = h('ul')({ style: { width: '100vw', height: '100vh' } })();
 
 document.body.append(list);
 
