@@ -7,7 +7,7 @@
   <a href="/LICENSE">
     <img alt="License AGPLv3" src="https://img.shields.io/badge/license-AGPLv3-blue.svg" />
   </a>
-  <img alt="Bundle size" src="https://img.shields.io/bundlejs/size/%40chronocide%2Fhyper">
+  <img alt="Bundle size" src="https://deno.bundlejs.com/?q=@chronocide/hyper">
   <a href="https://www.npmjs.com/package/@chronocide/hyper">
     <img alt="NPM" src="https://img.shields.io/npm/v/@chronocide/hyper?label=npm">
   </a>
