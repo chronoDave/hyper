@@ -15,6 +15,10 @@
   },
   "author": "Chronocide",
   "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chronoDave/hyper.git"
+  },
   "scripts": {
     "env": "node scripts/env.ts",
     "test": "node --env-file=.env --test src/**/*.spec.ts && tsc --noEmit",
