@@ -9,24 +9,26 @@ export type Cell = {
 };
 
 export type CellOptions<T> = {
-  /** If empty, equal to container width */
+  /** If null, equal to container width */
   width?: number | ((data: T, i: number, arr: T[]) => number | null) | null;
   /** If true, cells do not fill container width */
   gap?: boolean;
-  height: number | ((data: T, i: number, arr: T[]) => number);
+  /** If null, equal to item height (1:1) */
+  height: number | ((data: T, i: number, arr: T[]) => number | null) | null;
 };
 
 export const cells = <T>(cell: CellOptions<T>) =>
   (container: { width: number }) =>
     (data: T[]): Cell[] => array.fill(data.length)<Cell>((i, arr) => {
       const prev = array.get(arr)(i - 1);
-      const height = typeof cell.height === 'number' ?
-        cell.height :
-        cell.height(data[i], i, data);
 
       let width = container.width;
       if (typeof cell.width === 'number') width = cell.width;
       if (typeof cell.width === 'function') width = cell.width(data[i], i, data) ?? container.width;
+
+      let height = width;
+      if (typeof cell.height === 'number') height = cell.height;
+      if (typeof cell.height === 'function') height = cell.height(data[i], i, data) ?? width;
 
       if (!cell.gap) {
         const rows = Math.max(1, Math.floor(container.width / width));

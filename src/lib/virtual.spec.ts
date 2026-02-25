@@ -52,7 +52,7 @@ test('[virtual.cells]', t => {
   t.test('dynamic', () => {
     const cells = virtual.cells({
       width: (_, i) => i % 2 === 0 ? null : 15,
-      height: 25
+      height: (_, i) => i % 2 === 0 ? 25 : null
     })({ width: 50 })(Array.from({ length: 100 }));
 
     assert.equal(cells.length, 100, 'size');
@@ -63,12 +63,12 @@ test('[virtual.cells]', t => {
     );
     assert.deepEqual(
       cells[cells.length - 1],
-      { i: 99, width: 16, height: 25, x: 0, y: 100 * 25 - 25 },
+      { i: 99, width: 16, height: 15, x: 0, y: 1985 },
       'last'
     );
     assert.deepEqual(
       cells[13],
-      { i: 13, width: 16, height: 25, x: 0, y: 13 * 25 },
+      { i: 13, width: 16, height: 15, x: 0, y: 265 },
       'random'
     );
   });
