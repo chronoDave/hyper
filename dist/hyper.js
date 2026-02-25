@@ -72,10 +72,12 @@ const bisectRight = (arr) => (n) => {
 
 const cells = (cell) => (container) => (data) => fill(data.length)((i, arr) => {
   const prev = get(arr)(i - 1);
-  const height2 = typeof cell.height === "number" ? cell.height : cell.height(data[i], i, data);
   let width = container.width;
   if (typeof cell.width === "number") width = cell.width;
   if (typeof cell.width === "function") width = cell.width(data[i], i, data) ?? container.width;
+  let height2 = width;
+  if (typeof cell.height === "number") height2 = cell.height;
+  if (typeof cell.height === "function") height2 = cell.height(data[i], i, data) ?? width;
   if (!cell.gap) {
     const rows = Math.max(1, Math.floor(container.width / width));
     width = Math.floor(container.width / rows);

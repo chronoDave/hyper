@@ -1,9 +1,10 @@
 type CellOptions<T> = {
-    /** If empty, equal to container width */
+    /** If null, equal to container width */
     width?: number | ((data: T, i: number, arr: T[]) => number | null) | null;
     /** If true, cells do not fill container width */
     gap?: boolean;
-    height: number | ((data: T, i: number, arr: T[]) => number);
+    /** If null, equal to item height (1:1) */
+    height: number | ((data: T, i: number, arr: T[]) => number | null) | null;
 };
 
 type Json = string | number | boolean | null | Json[] | {
