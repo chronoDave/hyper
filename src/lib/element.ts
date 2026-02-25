@@ -175,7 +175,7 @@ export const virtual = (env: Env) =>
         let state: T[] = [];
 
         const update = debounce(env)((full?: boolean) => {
-          if (full) cache = cells(cell)({ width: root.getBoundingClientRect().width })(state);
+          if (full) cache = cells(cell)({ width: root.clientWidth })(state);
 
           const [min, max] = view({
             height: root.getBoundingClientRect().height,

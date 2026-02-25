@@ -179,7 +179,7 @@ const virtual$1 = (env) => (cell) => (render) => (root) => {
   let cache = [];
   let state = [];
   const update = debounce(env)((full) => {
-    if (full) cache = cells(cell)({ width: root.getBoundingClientRect().width })(state);
+    if (full) cache = cells(cell)({ width: root.clientWidth })(state);
     const [min, max] = view({
       height: root.getBoundingClientRect().height,
       y: Math.floor(root.scrollTop)

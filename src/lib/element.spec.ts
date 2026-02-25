@@ -162,6 +162,7 @@ test('[element.list]', t => {
 test('[element.virtual]', async t => {
   const script = await fsp.readFile(new URL('element.struct.js', import.meta.url), 'utf-8');
   const { page, close } = await puppeteer(script);
+  await new Promise(resolve => setTimeout(resolve, 3));
   await page.waitForSelector('ul div'); // Wait for update
 
   try {
@@ -189,7 +190,7 @@ test('[element.virtual]', async t => {
       assert.equal(properties.index, '0');
       assert.equal(properties.position, 'absolute');
       assert.equal(properties.transform, 'translate(0px, 0px)');
-      assert.equal(properties.width, '250px');
+      assert.equal(properties.width, '250px'); // Puppeteer reports 250px whilst visually it's 242px?
       assert.equal(properties.height, '250px');
     });
 
