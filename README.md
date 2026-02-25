@@ -20,8 +20,9 @@
 - Simple wrapper around native API's (DOM)
 - No vDOM, all state is stored within the DOM[*](#exception)
 - List caching
+- Virtualisation
 
-<p id="exception"><code>document</code> is stored internally, this prevents binding it for every single call.</p>
+<p id="exception"><code>document</code> and <code>window</code> are stored internally, this prevents binding it for every single call.</p>
 
 ## Installation
 
