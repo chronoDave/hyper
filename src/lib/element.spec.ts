@@ -235,12 +235,19 @@ test('[element.virtual]', async t => {
     });
 
     await t.test('renders children on resize', async () => {
-      const before = await page.$$eval('li', lis => lis.length);
-      await page.setViewport({ width: 1000, height: 1000 });
+      let before = await page.$$eval('li', lis => lis.length);
+      await page.setViewport({ width: 1000, height: 500 });
       await new Promise(resolve => setTimeout(resolve, 1));
-      const after = await page.$$eval('li', lis => lis.length);
+      let after = await page.$$eval('li', lis => lis.length);
 
-      assert.notEqual(before, after);
+      assert.notEqual(before, after, 'wide');
+
+      before = after;
+      await page.setViewport({ width: 500, height: 500 });
+      await new Promise(resolve => setTimeout(resolve, 1));
+      after = await page.$$eval('li', lis => lis.length);
+
+      assert.notEqual(before, after, 'small');
     });
   } finally {
     await close();
