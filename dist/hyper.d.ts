@@ -29,7 +29,7 @@ declare const _default: <T extends string = keyof HTMLElementTagNameMap>(tag: T)
 export declare const set: (element: Element) => (attributes: Attributes) => void;
 export declare const style: (element: HTMLElement) => (style: Record<string, string>) => void;
 export declare const svg: <T extends string = keyof SVGElementTagNameMap>(tag: T) => <P extends Attributes>(attributes?: P) => (...children: Child[]) => T extends keyof SVGElementTagNameMap ? SVGElementTagNameMap[T] : SVGElement;
-export declare const mathml: <T extends string = keyof MathMLElementEventMap>(tag: T) => <P extends Attributes>(attributes?: P) => (...children: Child[]) => T extends keyof MathMLElementEventMap ? MathMLElementEventMap[T] : MathMLElement;
+export declare const mathml: <T extends string = keyof MathMLElementTagNameMap>(tag: T) => <P extends Attributes>(attributes?: P) => (...children: Child[]) => T extends keyof MathMLElementTagNameMap ? MathMLElementTagNameMap[T] : MathMLElement;
 export declare const xml: (tag: string) => <P extends Attributes>(attributes?: P) => (...children: Child[]) => HTMLElement;
 export declare const list: <T extends Json>(render: (x: T, i: number, arr: T[]) => Element) => (root: Element) => (next: T[]) => void;
 export declare const virtual: <T>(cell: CellOptions<T>) => (render: (x: T, i: {
