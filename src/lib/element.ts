@@ -81,7 +81,7 @@ export const html = (env: Env) =>
   <T extends string = keyof HTMLElementTagNameMap>(tag: T) =>
     <P extends HTMLAttributes>(attributes?: P) =>
       (...children: T extends HTMLVoidElementTagName ? never[] : Child[]) => {
-        const root = create(env.document.createElement(tag))(attributes)(children);
+        const root = create(env.document.createElement(tag))(attributes)(children) as T extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[T] : HTMLElement;
         maybe(style(root))(attributes?.style);
 
         return root;
@@ -96,7 +96,7 @@ export const svg = (env: Env) =>
   <T extends string = keyof SVGElementTagNameMap>(tag: T) =>
     <P extends Attributes>(attributes?: P) =>
       (...children: Child[]) =>
-        create(env.document.createElementNS('http://www.w3.org/2000/svg', tag))(attributes)(children);
+        create(env.document.createElementNS('http://www.w3.org/2000/svg', tag))(attributes)(children) as T extends keyof SVGElementTagNameMap ? SVGElementTagNameMap[T] : SVGElement;
 
 /**
  * Create MathML element
@@ -104,10 +104,10 @@ export const svg = (env: Env) =>
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS
 */
 export const mathml = (env: Env) =>
-  <T extends string = keyof MathMLElementEventMap>(tag: T) =>
+  <T extends string = keyof MathMLElementTagNameMap>(tag: T) =>
     <P extends Attributes>(attributes?: P) =>
       (...children: Child[]) =>
-        create(env.document.createElementNS('http://www.w3.org/1998/Math/MathML', tag))(attributes)(children);
+        create(env.document.createElementNS('http://www.w3.org/1998/Math/MathML', tag))(attributes)(children) as T extends keyof MathMLElementTagNameMap ? MathMLElementTagNameMap[T] : MathMLElement;
 
 /**
  * Create XML element

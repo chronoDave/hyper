@@ -25,11 +25,11 @@ type HTMLAttributes = Attributes & {
 export type Child = Node | string;
 export type HTMLVoidElementTagName = "area" | "base" | "br" | "col" | "embed" | "hr" | "img" | "input" | "link" | "meta" | "source" | "track" | "wbr";
 export declare const env: Env;
-declare const _default: <T extends string = keyof HTMLElementTagNameMap>(tag: T) => <P extends HTMLAttributes>(attributes?: P) => (...children: T extends HTMLVoidElementTagName ? never[] : Child[]) => HTMLElement;
+declare const _default: <T extends string = keyof HTMLElementTagNameMap>(tag: T) => <P extends HTMLAttributes>(attributes?: P) => (...children: T extends HTMLVoidElementTagName ? never[] : Child[]) => T extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[T] : HTMLElement;
 export declare const set: (element: Element) => (attributes: Attributes) => void;
 export declare const style: (element: HTMLElement) => (style: Record<string, string>) => void;
-export declare const svg: <T extends string = keyof SVGElementTagNameMap>(tag: T) => <P extends Attributes>(attributes?: P) => (...children: Child[]) => SVGElement;
-export declare const mathml: <T extends string = keyof MathMLElementEventMap>(tag: T) => <P extends Attributes>(attributes?: P) => (...children: Child[]) => MathMLElement;
+export declare const svg: <T extends string = keyof SVGElementTagNameMap>(tag: T) => <P extends Attributes>(attributes?: P) => (...children: Child[]) => T extends keyof SVGElementTagNameMap ? SVGElementTagNameMap[T] : SVGElement;
+export declare const mathml: <T extends string = keyof MathMLElementEventMap>(tag: T) => <P extends Attributes>(attributes?: P) => (...children: Child[]) => T extends keyof MathMLElementEventMap ? MathMLElementEventMap[T] : MathMLElement;
 export declare const xml: (tag: string) => <P extends Attributes>(attributes?: P) => (...children: Child[]) => HTMLElement;
 export declare const list: <T extends Json>(render: (x: T, i: number, arr: T[]) => Element) => (root: Element) => (next: T[]) => void;
 export declare const virtual: <T>(cell: CellOptions<T>) => (render: (x: T, i: {
