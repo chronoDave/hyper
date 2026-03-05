@@ -12,6 +12,8 @@ export type { Json } from './lib/json.ts';
 export const env = new Env();
 
 export default element.html(env);
+export const set = element.set;
+export const style = element.style;
 
 export const svg = element.svg(env);
 export const mathml = element.mathml(env);

@@ -1,4 +1,5 @@
-class Env {
+// src/lib/env.ts
+var Env = class {
   _document;
   _window;
   get document() {
@@ -19,29 +20,31 @@ class Env {
     this._document = typeof document === "undefined" ? null : document;
     this._window = typeof window === "undefined" ? null : window;
   }
-}
+};
 
-const maybe = (fn) => (x) => {
+// src/lib/fn.ts
+var maybe = (fn) => (x) => {
   if (x === null || x === void 0) return null;
   return fn(x);
 };
-const debounce = (env) => (fn) => {
+var debounce = (env2) => (fn) => {
   let id;
   return (...x) => {
-    if (id) env.window.cancelAnimationFrame(id);
-    id = env.window.requestAnimationFrame(() => fn(...x));
+    if (id) env2.window.cancelAnimationFrame(id);
+    id = env2.window.requestAnimationFrame(() => fn(...x));
   };
 };
 
-const get = (arr) => (i) => arr[i] ?? null;
-const fill = (n) => (fn) => {
+// src/lib/array.ts
+var get = (arr) => (i) => arr[i] ?? null;
+var fill = (n) => (fn) => {
   const arr = Array.from({ length: n });
   for (let i = 0; i < arr.length; i += 1) {
     arr[i] = fn(i, arr);
   }
   return arr;
 };
-const bisectLeft = (arr) => (n) => {
+var bisectLeft = (arr) => (n) => {
   let l = 0;
   let r = arr.length;
   while (l < r) {
@@ -55,7 +58,7 @@ const bisectLeft = (arr) => (n) => {
   while (l > 0 && (arr[l] > n || arr[l - 1] === arr[l])) l -= 1;
   return Math.min(arr.length - 1, l);
 };
-const bisectRight = (arr) => (n) => {
+var bisectRight = (arr) => (n) => {
   let l = 0;
   let r = arr.length;
   while (l < r) {
@@ -70,7 +73,8 @@ const bisectRight = (arr) => (n) => {
   return Math.max(0, r - 1);
 };
 
-const cells = (cell) => (container) => (data) => fill(data.length)((i, arr) => {
+// src/lib/virtual.ts
+var cells = (cell) => (container) => (data) => fill(data.length)((i, arr) => {
   const prev = get(arr)(i - 1);
   let width = container.width;
   if (typeof cell.width === "number") width = cell.width;
@@ -90,15 +94,16 @@ const cells = (cell) => (container) => (data) => fill(data.length)((i, arr) => {
   }
   return { i, x, y, width, height: height2 };
 });
-const height = (cells2) => (get(cells2)(cells2.length - 1)?.y ?? 0) + (get(cells2)(cells2.length - 1)?.height ?? 0);
-const view = (container) => (cells2) => {
+var height = (cells2) => (get(cells2)(cells2.length - 1)?.y ?? 0) + (get(cells2)(cells2.length - 1)?.height ?? 0);
+var view = (container) => (cells2) => {
   const ly = cells2.map((cell) => cell.y);
   const min = bisectLeft(ly)(Math.max(0, container.y - container.height));
   const max = bisectRight(ly)(Math.min(height(cells2), container.y + container.height));
   return [min, max];
 };
 
-const equals = (a) => (b) => {
+// src/lib/json.ts
+var equals = (a) => (b) => {
   if (a === b) return true;
   if (Array.isArray(a) && Array.isArray(b)) {
     if (a.length !== b.length) return false;
@@ -115,7 +120,7 @@ const equals = (a) => (b) => {
   }
   return false;
 };
-const clone = (a) => {
+var clone = (a) => {
   if (a == null || typeof a !== "object") return a;
   if (Array.isArray(a)) {
     const b = [];
@@ -134,28 +139,29 @@ const clone = (a) => {
   throw new Error("Failed to clone, invalid type");
 };
 
-const set = (element) => (attributes) => Object.entries(attributes).forEach(([k, v]) => {
+// src/lib/element.ts
+var set = (element) => (attributes) => Object.entries(attributes).forEach(([k, v]) => {
   if (typeof v === "string") element.setAttribute(k, v);
   if (typeof v === "number") element.setAttribute(k, `${v}`);
   if (v === true) element.toggleAttribute(k, v);
 });
-const style = (element) => (style2) => Object.entries(style2).forEach(([k, v]) => {
+var style = (element) => (style3) => Object.entries(style3).forEach(([k, v]) => {
   element.style.setProperty(k, v);
 });
-const create = (element) => (attributes) => (children) => {
+var create = (element) => (attributes) => (children) => {
   maybe(set(element))(attributes);
   element.append(...children);
   return element;
 };
-const html = (env) => (tag) => (attributes) => (...children) => {
-  const root = create(env.document.createElement(tag))(attributes)(children);
+var html = (env2) => (tag) => (attributes) => (...children) => {
+  const root = create(env2.document.createElement(tag))(attributes)(children);
   maybe(style(root))(attributes?.style);
   return root;
 };
-const svg$1 = (env) => (tag) => (attributes) => (...children) => create(env.document.createElementNS("http://www.w3.org/2000/svg", tag))(attributes)(children);
-const mathml$1 = (env) => (tag) => (attributes) => (...children) => create(env.document.createElementNS("http://www.w3.org/1998/Math/MathML", tag))(attributes)(children);
-const xml$1 = (env) => (tag) => (attributes) => (...children) => create(env.document.createElementNS("http://www.w3.org/1999/xhtml", tag))(attributes)(children);
-const list$1 = (render) => (root) => {
+var svg = (env2) => (tag) => (attributes) => (...children) => create(env2.document.createElementNS("http://www.w3.org/2000/svg", tag))(attributes)(children);
+var mathml = (env2) => (tag) => (attributes) => (...children) => create(env2.document.createElementNS("http://www.w3.org/1998/Math/MathML", tag))(attributes)(children);
+var xml = (env2) => (tag) => (attributes) => (...children) => create(env2.document.createElementNS("http://www.w3.org/1999/xhtml", tag))(attributes)(children);
+var list = (render) => (root) => {
   let cache = [];
   return (next) => {
     while (root.children.length > next.length) root.lastChild?.remove();
@@ -172,7 +178,7 @@ const list$1 = (render) => (root) => {
     cache = clone(next);
   };
 };
-const virtual$1 = (env) => (cell) => (render) => (root) => {
+var virtual = (env2) => (cell) => (render) => (root) => {
   style(root)({
     "position": "relative",
     "max-height": "100%",
@@ -180,13 +186,13 @@ const virtual$1 = (env) => (cell) => (render) => (root) => {
   });
   let cache = [];
   let state = [];
-  const update = debounce(env)((full) => {
+  const update = debounce(env2)((full) => {
     if (full) cache = cells(cell)({ width: root.clientWidth })(state);
     const [min, max] = view({
       height: root.getBoundingClientRect().height,
       y: Math.floor(root.scrollTop)
     })(cache);
-    const spacer = html(env)("div")({
+    const spacer = html(env2)("div")({
       "aria-hidden": "true",
       "style": {
         "width": "100%",
@@ -206,7 +212,7 @@ const virtual$1 = (env) => (cell) => (render) => (root) => {
     }), spacer);
   });
   root.addEventListener("scroll", () => update(false), { passive: true });
-  env.window.addEventListener("resize", () => update(true), { passive: true });
+  env2.window.addEventListener("resize", () => update(true), { passive: true });
   return {
     update: (next) => {
       state = next;
@@ -220,12 +226,24 @@ const virtual$1 = (env) => (cell) => (render) => (root) => {
   };
 };
 
-const env = new Env();
-var hyper = html(env);
-const svg = svg$1(env);
-const mathml = mathml$1(env);
-const xml = xml$1(env);
-const list = list$1;
-const virtual = virtual$1(env);
-
-export { hyper as default, env, list, mathml, svg, virtual, xml };
+// src/hyper.ts
+var env = new Env();
+var hyper_default = html(env);
+var set2 = set;
+var style2 = style;
+var svg2 = svg(env);
+var mathml2 = mathml(env);
+var xml2 = xml(env);
+var list2 = list;
+var virtual2 = virtual(env);
+export {
+  hyper_default as default,
+  env,
+  list2 as list,
+  mathml2 as mathml,
+  set2 as set,
+  style2 as style,
+  svg2 as svg,
+  virtual2 as virtual,
+  xml2 as xml
+};

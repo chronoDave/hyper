@@ -162,7 +162,7 @@ test('[element.list]', t => {
 test('[element.virtual]', async t => {
   const script = await fsp.readFile(new URL('element.struct.js', import.meta.url), 'utf-8');
   const { page, close } = await puppeteer(script);
-  await new Promise(resolve => setTimeout(resolve, 100));
+  await new Promise(resolve => setTimeout(resolve, 1000));
 
   try {
     await t.test('sets list attributes', async () => {

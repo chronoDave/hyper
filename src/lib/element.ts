@@ -5,7 +5,7 @@ import type Env from './env.ts';
 import { debounce, maybe } from './fn.ts';
 import { cells, height, view } from './virtual.ts';
 import * as array from './array.ts';
-import { clone, equals } from './json.ts';
+import * as json from './json.ts';
 
 export type Attributes = Record<string, unknown>;
 
@@ -33,6 +33,11 @@ export const set = (element: Element) =>
       if (v === true) element.toggleAttribute(k, v);
     });
 
+/**
+ * Set element styles.
+ * 
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/setProperty
+ */
 export const style = (element: HTMLElement) =>
   (style: Record<string, string>): void => Object
     .entries(style)
@@ -73,7 +78,7 @@ export type HTMLVoidElementTagName =
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
  */
 export const html = (env: Env) =>
-  <T extends keyof HTMLElementTagNameMap>(tag: T) =>
+  <T extends string = keyof HTMLElementTagNameMap>(tag: T) =>
     <P extends HTMLAttributes>(attributes?: P) =>
       (...children: T extends HTMLVoidElementTagName ? never[] : Child[]) => {
         const root = create(env.document.createElement(tag))(attributes)(children);
@@ -88,7 +93,7 @@ export const html = (env: Env) =>
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS
 */
 export const svg = (env: Env) =>
-  <T extends keyof SVGElementTagNameMap>(tag: T) =>
+  <T extends string = keyof SVGElementTagNameMap>(tag: T) =>
     <P extends Attributes>(attributes?: P) =>
       (...children: Child[]) =>
         create(env.document.createElementNS('http://www.w3.org/2000/svg', tag))(attributes)(children);
@@ -99,7 +104,7 @@ export const svg = (env: Env) =>
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS
 */
 export const mathml = (env: Env) =>
-  <T extends keyof MathMLElementEventMap>(tag: T) =>
+  <T extends string = keyof MathMLElementEventMap>(tag: T) =>
     <P extends Attributes>(attributes?: P) =>
       (...children: Child[]) =>
         create(env.document.createElementNS('http://www.w3.org/1998/Math/MathML', tag))(attributes)(children);
@@ -140,7 +145,7 @@ export const list = <T extends Json>(render: (x: T, i: number, arr: T[]) => Elem
       while (root.children.length > next.length) root.lastChild?.remove();
 
       next.forEach((x, i) => {
-        if (i < cache.length && equals(x)(cache[i])) return;
+        if (i < cache.length && json.equals(x)(cache[i])) return;
 
         const element = render(x, i, next);
         const child = root.children.item(i);
@@ -152,7 +157,7 @@ export const list = <T extends Json>(render: (x: T, i: number, arr: T[]) => Elem
         }
       });
 
-      cache = clone(next);
+      cache = json.clone(next);
     };
   };
 
