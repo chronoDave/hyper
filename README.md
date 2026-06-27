@@ -154,7 +154,7 @@ update(['a', 'b', 'c', 'd']);
 /**
  * <ul>
  *  <li>a</li>
- *  <li>b</li> (render)
+ *  <li>c</li> (render)
  *  <li>c</li>
  * </ul>
  */
