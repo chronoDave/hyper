@@ -21,8 +21,8 @@
   },
   "scripts": {
     "env": "node scripts/env.ts",
-    "lint": "src/**/*.spec.ts && tsc --noEmit",
-    "test": "node --env-file=.env --test",
+    "lint": " tsc --noEmit",
+    "test": "node --env-file=.env --test src/**/*.spec.ts",
     "build": "node scripts/build.ts",
     "preversion": "npm run lint && npm run test",
     "version": "npm run build && git add -A dist",
