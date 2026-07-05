@@ -116,6 +116,7 @@ style(img)({ display: "block" }); // <img style="display: block;">
 Keeping track of children within a list can be tedious. `list` caches state and compares each entry, only updating children if the data has changed.
 
 **Note**: `list` only supports the following types:
+
 - `string`
 - `number`
 - `boolean`
@@ -165,7 +166,9 @@ update(['a', 'c', 'c']);
 
 Virtualisation is a technique that improves list performance by limiting the amount of children rendered. By only rendering elements that are visible within a defined viewport, the size of the DOM can be significantly decreased.
 
-`virtual` adds the neccesary inline styles and even listeners to make virtualisation possible, but does not add `aria` properties.
+`virtual` adds the necessary inline styles and even listeners to make virtualisation possible, but does not add `aria` properties.
+
+**Note**, `virtual` adds an invisible spacer element within the list. Make sure to account for this additional element when using size-related operations, .e.g `list.children.length`.
 
 ```ts
 import h, { virtual } from '@chronocide/hyper';
