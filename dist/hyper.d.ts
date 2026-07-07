@@ -1,6 +1,5 @@
 declare class Env {
-	private _document;
-	private _window;
+	#private;
 	get document(): Document;
 	set document(document: Document);
 	get window(): Window;

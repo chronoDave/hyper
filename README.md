@@ -164,11 +164,13 @@ update(['a', 'c', 'c']);
 
 ### `virtual`
 
-Virtualisation is a technique that improves list performance by limiting the amount of children rendered. By only rendering elements that are visible within a defined viewport, the size of the DOM can be significantly decreased.
+Virtualisation is a technique that improves list performance by limiting the amount of children rendered. By only rendering elements that are visible within a defined viewport, the size of the DOM can be significantly decreased. Like `list`, `virtual` caches state and compares each entry, only rendering children if the data has changed.
 
 `virtual` adds the necessary inline styles and even listeners to make virtualisation possible, but does not add `aria` properties.
 
 **Note**, `virtual` adds an invisible spacer element within the list. Make sure to account for this additional element when using size-related operations, .e.g `list.children.length`.
+
+**Note**, if the parent container has height `0`, `virtual` will render all children at once.
 
 ```ts
 import h, { virtual } from '@chronocide/hyper';

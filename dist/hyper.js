@@ -1,24 +1,24 @@
 // src/lib/env.ts
 var Env = class {
-  _document;
-  _window;
+  #document;
+  #window;
   get document() {
-    if (!this._document) throw new Error("Missing document");
-    return this._document;
+    if (!this.#document) throw new Error("Missing document");
+    return this.#document;
   }
   set document(document2) {
-    this._document = document2;
+    this.#document = document2;
   }
   get window() {
-    if (!this._window) throw new Error("Missing window");
-    return this._window;
+    if (!this.#window) throw new Error("Missing window");
+    return this.#window;
   }
   set window(window2) {
-    this._window = window2;
+    this.#window = window2;
   }
   constructor() {
-    this._document = typeof document === "undefined" ? null : document;
-    this._window = typeof window === "undefined" ? null : window;
+    this.#document = typeof document === "undefined" ? null : document;
+    this.#window = typeof window === "undefined" ? null : window;
   }
 };
 
@@ -184,42 +184,48 @@ var virtual = (env2) => (cell) => (render) => (root) => {
     "max-height": "100%",
     "overflow-y": "scroll"
   });
-  let cache = [];
+  let cells2 = [];
   let state = [];
-  const update = debounce(env2)((full) => {
-    if (full) cache = cells(cell)({ width: root.clientWidth })(state);
+  let cache = [];
+  const update = (force) => {
+    if (force) cells2 = cells(cell)({ width: root.clientWidth })(state);
     const [min, max] = view({
       height: root.getBoundingClientRect().height,
       y: Math.floor(root.scrollTop)
-    })(cache);
+    })(cells2);
     const spacer = html(env2)("div")({
       "aria-hidden": "true",
       "style": {
         "width": "100%",
-        "height": `${height(cache)}px`,
+        "height": `${height(cells2)}px`,
         "z-index": "-1"
       }
     })();
-    root.replaceChildren(...cache.slice(min, max + 1).map((cell2, j) => {
-      const child = render(state[cell2.i], { real: cell2.i, virtual: j }, state);
-      style(child)({
-        position: "absolute",
-        transform: `translate(${cell2.x}px, ${cell2.y}px)`,
-        width: `${cell2.width}px`,
-        height: `${cell2.height}px`
-      });
+    root.replaceChildren(...cells2.slice(min, max + 1).map((cell2, j) => {
+      let child = cache[cell2.i];
+      if (!child || force) {
+        child = render(state[cell2.i], { real: cell2.i, virtual: j }, state);
+        style(child)({
+          position: "absolute",
+          transform: `translate(${cell2.x}px, ${cell2.y}px)`,
+          width: `${cell2.width}px`,
+          height: `${cell2.height}px`
+        });
+        cache[cell2.i] = child;
+      }
       return child;
     }), spacer);
-  });
-  root.addEventListener("scroll", () => update(false), { passive: true });
-  env2.window.addEventListener("resize", () => update(true), { passive: true });
+  };
+  const dUpdate = debounce(env2)(update);
+  root.addEventListener("scroll", () => dUpdate(false), { passive: true });
+  env2.window.addEventListener("resize", () => dUpdate(true), { passive: true });
   return {
     update: (next) => {
       state = next;
       update(true);
     },
     scrollTo: (i) => {
-      const y = get(cache)(i)?.y;
+      const y = get(cells2)(i)?.y;
       if (typeof y !== "number") return;
       root.scrollTop = y;
     }

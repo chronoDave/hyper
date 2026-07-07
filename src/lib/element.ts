@@ -3,7 +3,7 @@ import type { Json } from './json.ts';
 import type Env from './env.ts';
 
 import { debounce, maybe } from './fn.ts';
-import { cells, height, view } from './virtual.ts';
+import * as v from './virtual.ts';
 import * as array from './array.ts';
 import * as json from './json.ts';
 
@@ -163,10 +163,10 @@ export const list = <T extends Json>(render: (x: T, i: number, arr: T[]) => Elem
   };
 
 /**
- * Create virtualised element container
- * 
+ * Create cached virtualised element container
+ *
  * @see https://github.com/chronoDave/hyper?tab=readme-ov-file#virtual
-*/
+ */
 export const virtual = (env: Env) =>
   <T>(cell: CellOptions<T>) =>
     (render: (x: T, i: { real: number; virtual: number }, arr: T[]) => HTMLElement) =>
@@ -177,41 +177,48 @@ export const virtual = (env: Env) =>
           'overflow-y': 'scroll'
         });
 
-        let cache: Cell[] = [];
+        let cells: Cell[] = [];
         let state: T[] = [];
+        let cache: HTMLElement[] = [];
 
-        const update = debounce(env)((full?: boolean) => {
-          if (full) cache = cells(cell)({ width: root.clientWidth })(state);
+        const update = (force?: boolean) => {
+          if (force) cells = v.cells(cell)({ width: root.clientWidth })(state);
 
-          const [min, max] = view({
+          const [min, max] = v.view({
             height: root.getBoundingClientRect().height,
             y: Math.floor(root.scrollTop)
-          })(cache);
+          })(cells);
 
           const spacer = html(env)('div')({
             'aria-hidden': 'true',
             'style': {
               'width': '100%',
-              'height': `${height(cache)}px`,
+              'height': `${v.height(cells)}px`,
               'z-index': '-1'
             }
           })();
 
-          root.replaceChildren(...cache.slice(min, max + 1).map((cell, j) => {
-            const child = render(state[cell.i], { real: cell.i, virtual: j }, state);
-            style(child)({
-              position: 'absolute',
-              transform: `translate(${cell.x}px, ${cell.y}px)`,
-              width: `${cell.width}px`,
-              height: `${cell.height}px`
-            });
+          root.replaceChildren(...cells.slice(min, max + 1).map((cell, j) => {
+            let child = cache[cell.i] as HTMLElement | null;
+            if (!child || force) {
+              child = render(state[cell.i], { real: cell.i, virtual: j }, state);
+              style(child)({
+                position: 'absolute',
+                transform: `translate(${cell.x}px, ${cell.y}px)`,
+                width: `${cell.width}px`,
+                height: `${cell.height}px`
+              });
+              cache[cell.i] = child;
+            }
 
             return child;
           }), spacer);
-        });
+        };
 
-        root.addEventListener('scroll', () => update(false), { passive: true });
-        env.window.addEventListener('resize', () => update(true), { passive: true });
+        const dUpdate = debounce(env)(update);
+
+        root.addEventListener('scroll', () => dUpdate(false), { passive: true });
+        env.window.addEventListener('resize', () => dUpdate(true), { passive: true });
 
         return {
           update: (next: T[]) => {
@@ -220,7 +227,7 @@ export const virtual = (env: Env) =>
             update(true);
           },
           scrollTo: (i: number) => {
-            const y = array.get(cache)(i)?.y;
+            const y = array.get(cells)(i)?.y;
             if (typeof y !== 'number') return;
 
             root.scrollTop = y;
