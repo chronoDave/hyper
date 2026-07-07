@@ -68,35 +68,35 @@ test('[element.create]', t => {
   env.window = window;
   env.document = document;
 
-  t.test('[element.html] creates HTML element', () => {  
+  t.test('[element.html] creates HTML element', () => {
     const a = element.html(env)('a')({ href: '/' })('a');
-  
+
     assert.equal(a.tagName, 'A', 'tag');
     assert.equal(a.getAttribute('href'), '/', 'attribute');
     assert.equal(a.textContent, 'a', 'children');
   });
-  
+
   t.test('[element.svg] creates SVG element', () => {
     const a = element.svg(env)('a')({ href: '/' })('a');
-  
+
     assert.equal(a.namespaceURI, 'http://www.w3.org/2000/svg');
     assert.equal(a.tagName, 'a', 'tag');
     assert.equal(a.getAttribute('href'), '/', 'attribute');
     assert.equal(a.textContent, 'a', 'children');
   });
-  
-  t.test('[element.mathml] creates MathML element', () => {  
+
+  t.test('[element.mathml] creates MathML element', () => {
     const a = element.mathml(env)('blur')({ href: '/' })('a');
-  
+
     assert.equal(a.namespaceURI, 'http://www.w3.org/1998/Math/MathML');
     assert.equal(a.tagName, 'blur', 'tag');
     assert.equal(a.getAttribute('href'), '/', 'attribute');
     assert.equal(a.textContent, 'a', 'children');
   });
-  
-  t.test('[element.xml] creates XML element', () => { 
+
+  t.test('[element.xml] creates XML element', () => {
     const a = element.xml(env)('a')({ href: '/' })('a');
-  
+
     assert.equal(a.namespaceURI, 'http://www.w3.org/1999/xhtml');
     assert.equal(a.tagName, 'A', 'tag');
     assert.equal(a.getAttribute('href'), '/', 'attribute');
@@ -123,10 +123,10 @@ test('[element.list]', t => {
 
     return { ul, update };
   };
-  
+
   t.test('adds children on update', () => {
     const { ul, update } = struct();
-    
+
     update([1, 2, 3, 4]);
     assert.equal(ul.children.item(0)?.textContent, '1', 'renders child');
     assert.equal(ul.children.length, 4, 'append');

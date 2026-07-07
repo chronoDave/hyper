@@ -58,7 +58,7 @@ export const bisectRight = (arr: number[]) =>
     while (
       r < arr.length &&
       (arr[r - 1] < n || arr[r] === arr[r - 1])
-    ) r += 1; 
+    ) r += 1;
 
     return Math.max(0, r - 1);
   };

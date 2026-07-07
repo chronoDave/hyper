@@ -15,7 +15,7 @@ test('[virtual.cells]', t => {
     );
     assert.deepEqual(
       cells[cells.length - 1],
-      { i: 99, width: 50, height: 25, x: 0, y: 25 * 100 - 25 },
+      { i: 99, width: 50, height: 25, x: 0, y: (25 * 100) - 25 },
       'last'
     );
     assert.deepEqual(

@@ -177,7 +177,7 @@ type Planet = { id: string; name: string };
 
 const ul = h('ul')()(); // <ul></ul>
 const render = (planet: Planet) => h('li')({ id: planet.id })(planet.name);
-const { update, scrollTo } = virtual(render)(ul);
+const { update, scrollTo } = virtual({ height: 24 })(render)(ul);
 
 const planets: Planet[] = [
   { id: 'jupiter', name: 'Jupiter' },

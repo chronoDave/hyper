@@ -15,15 +15,16 @@ export type HTMLAttributes = Attributes & {
 
 /**
  * Set element attributes.
- * 
+ *
  * Only `string`, `number` and `true` attributes are set:
- * 
+ *
  *  - `string`: `key="string"`
  *  - `number`: `key="number"`
  *  - `true`: `key=""`
- * 
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute
- * */
+ *
+ */
 export const set = (element: Element) =>
   (attributes: Attributes): void => Object
     .entries(attributes)
@@ -35,7 +36,7 @@ export const set = (element: Element) =>
 
 /**
  * Set element styles.
- * 
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/setProperty
  */
 export const style = (element: HTMLElement) =>
@@ -74,7 +75,7 @@ export type HTMLVoidElementTagName =
 
 /**
  * Create HTML element
- * 
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
  */
 export const html = (env: Env) =>
@@ -89,9 +90,9 @@ export const html = (env: Env) =>
 
 /**
  * Create SVG element
- * 
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS
-*/
+ */
 export const svg = (env: Env) =>
   <T extends string = keyof SVGElementTagNameMap>(tag: T) =>
     <P extends Attributes>(attributes?: P) =>
@@ -100,9 +101,9 @@ export const svg = (env: Env) =>
 
 /**
  * Create MathML element
- * 
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS
-*/
+ */
 export const mathml = (env: Env) =>
   <T extends string = keyof MathMLElementTagNameMap>(tag: T) =>
     <P extends Attributes>(attributes?: P) =>
@@ -111,9 +112,9 @@ export const mathml = (env: Env) =>
 
 /**
  * Create XML element
- * 
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS
-*/
+ */
 export const xml = (env: Env) =>
   (tag: string) =>
     <P extends Attributes>(attributes?: P) =>
@@ -122,18 +123,18 @@ export const xml = (env: Env) =>
 
 /**
  * Create cached element container.
- * 
+ *
  * `list` only support the following types:
- * 
+ *
  * - `string`
  * - `number`
  * - `boolean`
  * - `null`
  * - `array`
  * - `object`
- * 
+ *
  * Where `array` and `object` can only contain aformentioned types.
- * 
+ *
  * @see https://github.com/chronoDave/hyper?tab=readme-ov-file#list
  */
 export const list = <T extends Json>(render: (x: T, i: number, arr: T[]) => Element) =>

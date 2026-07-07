@@ -1,30 +1,30 @@
 export default class Env {
-  private _document: Document | null;
-  private _window: Window | null;
+  #document: Document | null;
+  #window: Window | null;
 
   get document(): Document {
-    if (!this._document) throw new Error('Missing document');
-    return this._document;
+    if (!this.#document) throw new Error('Missing document');
+    return this.#document;
   }
 
   set document(document: Document) {
-    this._document = document;
+    this.#document = document;
   }
 
   get window(): Window {
-    if (!this._window) throw new Error('Missing window');
-    return this._window;
+    if (!this.#window) throw new Error('Missing window');
+    return this.#window;
   }
 
   set window(window: Window) {
-    this._window = window;
+    this.#window = window;
   }
-  
+
   constructor() {
-    this._document = typeof document === 'undefined' ?
+    this.#document = typeof document === 'undefined' ?
       null :
       document;
-    this._window = typeof window === 'undefined' ?
+    this.#window = typeof window === 'undefined' ?
       null :
       window;
   }

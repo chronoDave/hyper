@@ -21,7 +21,7 @@
   },
   "scripts": {
     "env": "node scripts/env.ts",
-    "lint": " tsc --noEmit",
+    "lint": " tsc --noEmit && eslint src",
     "test": "node --env-file=.env --test src/**/*.spec.ts",
     "build": "node scripts/build.ts",
     "preversion": "npm run lint && npm run test",
@@ -29,7 +29,7 @@
     "postversion": "git push && git push --tags"
   },
   "devDependencies": {
-    "@chronocide/eslint-config": "^0.8.1",
+    "@chronocide/eslint-config": "0.13.1",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.15.29",
     "dts-bundle-generator": "^9.5.1",
