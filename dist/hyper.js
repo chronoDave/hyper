@@ -188,7 +188,10 @@ var virtual = (env2) => (cell) => (render) => (root) => {
   let state = [];
   let cache = [];
   const update = (force) => {
-    if (force) cells2 = cells(cell)({ width: root.clientWidth })(state);
+    if (force) {
+      cache = [];
+      cells2 = cells(cell)({ width: root.clientWidth })(state);
+    }
     const [min, max] = view({
       height: root.getBoundingClientRect().height,
       y: Math.floor(root.scrollTop)
@@ -203,7 +206,7 @@ var virtual = (env2) => (cell) => (render) => (root) => {
     })();
     root.replaceChildren(...cells2.slice(min, max + 1).map((cell2, j) => {
       let child = cache[cell2.i];
-      if (!child || force) {
+      if (!child) {
         child = render(state[cell2.i], { real: cell2.i, virtual: j }, state);
         style(child)({
           position: "absolute",
