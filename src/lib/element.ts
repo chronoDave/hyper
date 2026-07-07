@@ -182,7 +182,10 @@ export const virtual = (env: Env) =>
         let cache: HTMLElement[] = [];
 
         const update = (force?: boolean) => {
-          if (force) cells = v.cells(cell)({ width: root.clientWidth })(state);
+          if (force) {
+            cache = [];
+            cells = v.cells(cell)({ width: root.clientWidth })(state);
+          }
 
           const [min, max] = v.view({
             height: root.getBoundingClientRect().height,
@@ -200,7 +203,7 @@ export const virtual = (env: Env) =>
 
           root.replaceChildren(...cells.slice(min, max + 1).map((cell, j) => {
             let child = cache[cell.i] as HTMLElement | null;
-            if (!child || force) {
+            if (!child) {
               child = render(state[cell.i], { real: cell.i, virtual: j }, state);
               style(child)({
                 position: 'absolute',
