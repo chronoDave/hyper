@@ -17,8 +17,8 @@ export type CellOptions<T> = {
 export type Json = string | number | boolean | null | Json[] | {
 	[key: string]: Json;
 };
-export type Attributes = Record<string, unknown>;
-type HTMLAttributes = Attributes & {
+export type HTMLAttributes = {
+	[key: string]: unknown;
 	style?: Record<string, string>;
 };
 export type Child = Node | string;
@@ -30,12 +30,12 @@ type VirtualOptions<T> = CellOptions<T> & {
 	}, arr: T[]) => HTMLElement;
 };
 export declare const env: Env;
-declare const _default: <T extends string = keyof HTMLElementTagNameMap>(tag: T) => <P extends HTMLAttributes>(attributes?: P) => (...children: T extends HTMLVoidElementTagName ? never[] : Child[]) => T extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[T] : HTMLElement;
-export declare const set: (element: Element) => (attributes: Attributes) => void;
+declare const _default: <T extends string = keyof HTMLElementTagNameMap>(tag: T) => (attributes?: HTMLAttributes) => (...children: T extends HTMLVoidElementTagName ? never[] : Child[]) => T extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[T] : HTMLElement;
+export declare const set: (element: Element) => (attributes: Record<string, unknown>) => void;
 export declare const style: (element: HTMLElement) => (style: Record<string, string>) => void;
-export declare const svg: <T extends string = keyof SVGElementTagNameMap>(tag: T) => <P extends Attributes>(attributes?: P | undefined) => (...children: Child[]) => T extends keyof SVGElementTagNameMap ? SVGElementTagNameMap[T] : SVGElement;
-export declare const mathml: <T extends string = keyof MathMLElementTagNameMap>(tag: T) => <P extends Attributes>(attributes?: P | undefined) => (...children: Child[]) => T extends keyof MathMLElementTagNameMap ? MathMLElementTagNameMap[T] : MathMLElement;
-export declare const xml: (tag: string) => <P extends Attributes>(attributes?: P | undefined) => (...children: Child[]) => HTMLElement;
+export declare const svg: <T extends string = keyof SVGElementTagNameMap>(tag: T) => (attributes?: Record<string, unknown>) => (...children: Child[]) => T extends keyof SVGElementTagNameMap ? SVGElementTagNameMap[T] : SVGElement;
+export declare const mathml: <T extends string = keyof MathMLElementTagNameMap>(tag: T) => (attributes?: Record<string, unknown>) => (...children: Child[]) => T extends keyof MathMLElementTagNameMap ? MathMLElementTagNameMap[T] : MathMLElement;
+export declare const xml: (tag: string) => (attributes?: Record<string, unknown>) => (...children: Child[]) => HTMLElement;
 export declare const list: <T extends Json>(render: (x: T, i: number, arr: T[]) => Element) => (root: Element) => (next: T[]) => void;
 export declare const virtual: <T>(options: VirtualOptions<T>) => (root: HTMLElement, container?: HTMLElement) => {
 	update: (next: T[]) => void;

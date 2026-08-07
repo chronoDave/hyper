@@ -37,6 +37,7 @@ var debounce = (env2) => (fn) => {
 
 // src/lib/array.ts
 var get = (arr) => (i) => arr[i] ?? null;
+var last = (arr) => arr[arr.length - 1] ?? null;
 var fill = (n) => (fn) => {
   const arr = Array.from({ length: n });
   for (let i = 0; i < arr.length; i += 1) {
@@ -75,7 +76,6 @@ var bisectRight = (arr) => (n) => {
 
 // src/lib/virtual.ts
 var cells = (cell) => (container) => (data) => fill(data.length)((i, arr) => {
-  const prev = get(arr)(i - 1);
   let width = container.width;
   if (typeof cell.width === "number") width = cell.width;
   if (typeof cell.width === "function") width = cell.width(data[i], i, data) ?? container.width;
@@ -86,6 +86,7 @@ var cells = (cell) => (container) => (data) => fill(data.length)((i, arr) => {
   let height2 = width;
   if (typeof cell.height === "number") height2 = cell.height;
   if (typeof cell.height === "function") height2 = cell.height(data[i], i, data) ?? width;
+  const prev = get(arr)(i - 1);
   let x = (prev?.x ?? 0) + (prev?.width ?? 0);
   let y = prev?.y ?? 0;
   if (x + width > container.width) {
@@ -94,7 +95,11 @@ var cells = (cell) => (container) => (data) => fill(data.length)((i, arr) => {
   }
   return { i, x, y, width, height: height2 };
 });
-var height = (cells2) => (get(cells2)(cells2.length - 1)?.y ?? 0) + (get(cells2)(cells2.length - 1)?.height ?? 0);
+var height = (cells2) => {
+  const last2 = last(cells2);
+  if (!last2) return 0;
+  return last2.y + last2.height;
+};
 var view = (container) => (cells2) => {
   const ly = cells2.map((cell) => cell.y);
   const min = bisectLeft(ly)(Math.max(0, container.y - container.height));
