@@ -5,8 +5,15 @@ import * as array from './array.ts';
 
 test('[array.get]', () => {
   assert.equal(array.get([1, 2, 0])(2), 0, 'within bounds');
+  assert.equal(array.get([false])(0), false, 'within bounds (falsy)');
   assert.equal(array.get([1, 2, 3])(-1), null, 'out of bounds (left)');
   assert.equal(array.get([1, 2, 3])(3), null, 'out of bounds (right)');
+});
+
+test('[array.last]', () => {
+  assert.equal(array.last([]), null, 'empty');
+  assert.equal(array.last([1, 2, 3]), 3, 'last');
+  assert.equal(array.last([1, 2, false]), false, 'last (falsy)');
 });
 
 test('[array.fill] returns filled array', () => {

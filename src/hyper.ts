@@ -4,7 +4,7 @@ import * as element from './lib/element.ts';
 export type {
   Child,
   HTMLVoidElementTagName,
-  Attributes
+  HTMLAttributes
 } from './lib/element.ts';
 export type { CellOptions } from './lib/virtual.ts';
 export type { Json } from './lib/json.ts';

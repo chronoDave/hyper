@@ -1,6 +1,6 @@
 import h, { virtual } from '../dist/hyper.js';
 
-const list = h('ul')({
+const container = h('div')({
   style: {
     width: '500px',
     height: '500px',
@@ -8,12 +8,13 @@ const list = h('ul')({
   }
 })();
 
-document.body.append(list);
+document.body.append(container);
 
 const { update, scrollTo } = virtual({
   width: 200,
-  height: 250
-})((_, i) => h('li')({ 'data-index': i.real })(`${i.virtual} (${i.real})`))(list);
+  height: 250,
+  render: (_, i) => h('li')({ 'data-index': i.real })(`${i.virtual} (${i.real})`)
+})(container, h('ul')({ style: { padding: 0 } })());
 
 update(Array.from({ length: 100 }));
 

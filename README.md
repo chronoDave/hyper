@@ -168,18 +168,20 @@ Virtualisation is a technique that improves list performance by limiting the amo
 
 `virtual` adds the necessary inline styles and even listeners to make virtualisation possible, but does not add `aria` properties.
 
-**Note**, `virtual` adds an invisible spacer element within the list. Make sure to account for this additional element when using size-related operations, .e.g `list.children.length`.
-
-**Note**, if the parent container has height `0`, `virtual` will render all children at once.
+**Note**: `virtual` attaches event listeners to the root element and window. Please make sure to clean up these listeners if the element is removed using `cleanup`.
 
 ```ts
 import h, { virtual } from '@chronocide/hyper';
 
 type Planet = { id: string; name: string };
 
-const ul = h('ul')()(); // <ul></ul>
-const render = (planet: Planet) => h('li')({ id: planet.id })(planet.name);
-const { update, scrollTo } = virtual({ height: 24 })(render)(ul);
+const root = h('div')()();
+document.body.append(root);
+
+const { update, scrollTo, cleanup } = virtual({
+  height: 24,
+  render: (planet: Planet) => h('li')({ id: planet.id })(planet.name)
+})(root, h('ul')()());
 
 const planets: Planet[] = [
   { id: 'jupiter', name: 'Jupiter' },
@@ -188,8 +190,11 @@ const planets: Planet[] = [
   // ...
 ];
 
-update(planets); // <ul><li id="jupiter">Jupiter</li><li id="mars">Mars</li><li id="pluto">Pluto</li></ul>
+update(planets); // <div style="overflow-y: scroll;"><ul style="position: relative; height: ...px"><li id="jupiter">Jupiter</li><li id="mars">Mars</li><li id="pluto">Pluto</li></ul></div>
 scrollTo(30); // Scroll to 30th item
+
+cleanup();
+document.body.removeChild(root);
 ```
 
 ## Testing

@@ -20,8 +20,6 @@ export type CellOptions<T> = {
 export const cells = <T>(cell: CellOptions<T>) =>
   (container: { width: number }) =>
     (data: T[]): Cell[] => array.fill(data.length)<Cell>((i, arr) => {
-      const prev = array.get(arr)(i - 1);
-
       let width = container.width;
       if (typeof cell.width === 'number') width = cell.width;
       if (typeof cell.width === 'function') width = cell.width(data[i], i, data) ?? container.width;
@@ -35,6 +33,8 @@ export const cells = <T>(cell: CellOptions<T>) =>
       if (typeof cell.height === 'number') height = cell.height;
       if (typeof cell.height === 'function') height = cell.height(data[i], i, data) ?? width;
 
+      const prev = array.get(arr)(i - 1);
+
       let x = (prev?.x ?? 0) + (prev?.width ?? 0);
       let y = prev?.y ?? 0;
 
@@ -46,9 +46,12 @@ export const cells = <T>(cell: CellOptions<T>) =>
       return { i, x, y, width, height };
     });
 
-export const height = (cells: Cell[]): number =>
-  (array.get(cells)(cells.length - 1)?.y ?? 0) +
-  (array.get(cells)(cells.length - 1)?.height ?? 0);
+export const height = (cells: Cell[]): number => {
+  const last = array.last(cells);
+  if (!last) return 0;
+
+  return last.y + last.height;
+};
 
 export const view = (container: { height: number; y: number }) =>
   (cells: Cell[]): [min: number, max: number] => {

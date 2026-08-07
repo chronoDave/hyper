@@ -148,19 +148,19 @@ var set = (element) => (attributes) => Object.entries(attributes).forEach(([k, v
 var style = (element) => (style3) => Object.entries(style3).forEach(([k, v]) => {
   element.style.setProperty(k, v);
 });
-var create = (element) => (attributes) => (children) => {
+var create = (element) => (attributes) => (...children) => {
   maybe(set(element))(attributes);
   element.append(...children);
   return element;
 };
 var html = (env2) => (tag) => (attributes) => (...children) => {
-  const root = create(env2.document.createElement(tag))(attributes)(children);
+  const root = create(env2.document.createElement(tag))(attributes)(...children);
   maybe(style(root))(attributes?.style);
   return root;
 };
-var svg = (env2) => (tag) => (attributes) => (...children) => create(env2.document.createElementNS("http://www.w3.org/2000/svg", tag))(attributes)(children);
-var mathml = (env2) => (tag) => (attributes) => (...children) => create(env2.document.createElementNS("http://www.w3.org/1998/Math/MathML", tag))(attributes)(children);
-var xml = (env2) => (tag) => (attributes) => (...children) => create(env2.document.createElementNS("http://www.w3.org/1999/xhtml", tag))(attributes)(children);
+var svg = (env2) => (tag) => create(env2.document.createElementNS("http://www.w3.org/2000/svg", tag));
+var mathml = (env2) => (tag) => create(env2.document.createElementNS("http://www.w3.org/1998/Math/MathML", tag));
+var xml = (env2) => (tag) => create(env2.document.createElementNS("http://www.w3.org/1999/xhtml", tag));
 var list = (render) => (root) => {
   let cache = [];
   return (next) => {
@@ -178,50 +178,57 @@ var list = (render) => (root) => {
     cache = clone(next);
   };
 };
-var virtual = (env2) => (cell) => (render) => (root) => {
-  style(root)({
-    "position": "relative",
-    "max-height": "100%",
-    "overflow-y": "scroll"
-  });
+var virtual = (env2) => (options) => (root, container) => {
+  root.style.overflowY = "scroll";
+  container ??= html(env2)("div")()();
+  style(container)({ position: "relative", height: "100%" });
+  root.replaceChildren(container);
   let cells2 = [];
   let state = [];
   let cache = [];
   const update = (force) => {
     if (force) {
       cache = [];
-      cells2 = cells(cell)({ width: root.clientWidth })(state);
+      cells2 = cells(options)({ width: root.clientWidth })(state);
     }
     const [min, max] = view({
       height: root.getBoundingClientRect().height,
       y: Math.floor(root.scrollTop)
     })(cells2);
-    const spacer = html(env2)("div")({
-      "aria-hidden": "true",
-      "style": {
-        "width": "100%",
-        "height": `${height(cells2)}px`,
-        "z-index": "-1"
-      }
-    })();
-    root.replaceChildren(...cells2.slice(min, max + 1).map((cell2, j) => {
-      let child = cache[cell2.i];
+    container.style.height = `${height(cells2)}px`;
+    container.replaceChildren(...cells2.slice(min, max + 1).map((cell, j) => {
+      let child = get(cache)(cell.i);
       if (!child) {
-        child = render(state[cell2.i], { real: cell2.i, virtual: j }, state);
+        child = options.render(state[cell.i], { real: cell.i, virtual: j }, state);
         style(child)({
           position: "absolute",
-          transform: `translate(${cell2.x}px, ${cell2.y}px)`,
-          width: `${cell2.width}px`,
-          height: `${cell2.height}px`
+          transform: `translate(${cell.x}px, ${cell.y}px)`,
+          width: `${cell.width}px`,
+          height: `${cell.height}px`
         });
-        cache[cell2.i] = child;
+        cache[cell.i] = child;
       }
       return child;
-    }), spacer);
+    }));
   };
-  const dUpdate = debounce(env2)(update);
-  root.addEventListener("scroll", () => dUpdate(false), { passive: true });
-  env2.window.addEventListener("resize", () => dUpdate(true), { passive: true });
+  const scroll = () => debounce(env2)(update)(false);
+  const resize = () => debounce(env2)(update)(true);
+  root.addEventListener("scroll", scroll, { passive: true });
+  env2.window.addEventListener("resize", resize, { passive: true });
+  const observer = new env2.window.MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      for (const element of mutation.removedNodes) {
+        if (element === root) {
+          observer.disconnect();
+          root.removeEventListener("scroll", scroll);
+          env2.window.removeEventListener("resize", resize);
+        }
+      }
+    }
+  });
+  if (root.parentElement) observer.observe(root.parentElement, {
+    childList: true
+  });
   return {
     update: (next) => {
       state = next;

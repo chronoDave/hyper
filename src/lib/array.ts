@@ -2,6 +2,9 @@ export const get = <T>(arr: T[]) =>
   (i: number): T | null =>
     arr[i] ?? null;
 
+export const last = <T>(arr: T[]): T | null =>
+  arr[arr.length - 1] ?? null;
+
 export const fill = (n: number) =>
   <T>(fn: (i: number, arr: T[]) => T): T[] => {
     const arr = Array.from<T>({ length: n });

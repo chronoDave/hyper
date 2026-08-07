@@ -166,15 +166,17 @@ test('[element.virtual]', async t => {
 
   try {
     await t.test('sets list attributes', async () => {
-      const properties = await page.$eval('ul', x => ({
-        'position': x.style.getPropertyValue('position'),
-        'max-height': x.style.getPropertyValue('max-height'),
+      const root = await page.$eval('div', x => ({
         'overflow-y': x.style.getPropertyValue('overflow-y')
       }));
+      const container = await page.$eval('ul', x => ({
+        position: x.style.getPropertyValue('position'),
+        height: x.style.getPropertyValue('height')
+      }));
 
-      assert.equal(properties.position, 'relative');
-      assert.equal(properties['max-height'], '100%');
-      assert.equal(properties['overflow-y'], 'scroll');
+      assert.equal(root['overflow-y'], 'scroll', 'overflow-y');
+      assert.equal(container.position, 'relative', 'position');
+      assert.ok(container.height, 'height');
     });
 
     await t.test('sets child attributes', async () => {
@@ -186,32 +188,18 @@ test('[element.virtual]', async t => {
         height: x.style.getPropertyValue('height')
       }));
 
-      assert.equal(properties.index, '0');
-      assert.equal(properties.position, 'absolute');
-      assert.equal(properties.transform, 'translate(0px, 0px)');
-      assert.equal(properties.width, '250px'); // Puppeteer reports 250px whilst visually it's 242px?
-      assert.equal(properties.height, '250px');
-    });
-
-    await t.test('renders spacer', async () => {
-      const properties = await page.$eval('ul div', x => ({
-        'aria-hidden': x.getAttribute('aria-hidden'),
-        'width': x.style.getPropertyValue('width'),
-        'height': x.style.getPropertyValue('height'),
-        'z-index': x.style.getPropertyValue('z-index')
-      }));
-
-      assert.equal(properties['aria-hidden'], 'true');
-      assert.equal(properties.width, '100%');
-      assert.equal(properties.height, '12500px');
-      assert.equal(properties['z-index'], '-1');
+      assert.equal(properties.index, '0', 'index');
+      assert.equal(properties.position, 'absolute', 'position');
+      assert.equal(properties.transform, 'translate(0px, 0px)', 'transform');
+      assert.equal(properties.width, '250px', 'width');
+      assert.equal(properties.height, '250px', 'height');
     });
 
     await t.test('renders children', async () => {
       const lis = await page.$$('li');
 
-      // 2*2 + 2
-      assert.equal(lis.length, 6, 'bottom');
+      // 2*2 (width x height, 500 / 250) + 2 (overflow)
+      assert.equal(lis.length, 6);
     });
 
     await t.test('renders children on scroll', async () => {
