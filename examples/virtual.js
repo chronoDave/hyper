@@ -1,4 +1,4 @@
-import h, { virtual } from '../dist/hyper.js';
+import h, { virtual } from '../dist/dom.js';
 
 const container = h('div')({
   style: {

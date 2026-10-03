@@ -4,19 +4,19 @@ import assert from 'node:assert/strict';
 import dom from '../test/dom.ts';
 import browser from '../test/browser.ts';
 
-import h, { env } from './hyper.ts';
+import h, { env } from './dom.ts';
 
-test('[hyper] does not error if document is set manually', () => {
+test('[dom] does not error if document is set manually', () => {
   const { document } = dom();
   env.document = document;
 
   assert.doesNotThrow(h('div')());
 });
 
-test('[hyper] does not error if document is set automatically', async () => {
+test('[dom] does not error if document is set automatically', async () => {
   const { page, close } = await browser([
-    'const h = window.hyper.default;',
-    'document.body.append(h("h1")()("Hyper"));'
+    'const h = window.dom.default;',
+    'document.body.append(h("h1")()("dom"));'
   ].join(''));
 
   try {

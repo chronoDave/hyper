@@ -1,11 +1,11 @@
 {
-  "name": "@chronocide/hyper",
+  "name": "@chronocide/dom",
   "version": "2.0.0",
   "type": "module",
-  "types": "dist/hyper.d.ts",
+  "types": "dist/dom.d.ts",
   "exports": {
     "./package.json": "./package.json",
-    ".": "./dist/hyper.js"
+    ".": "./dist/dom.js"
   },
   "files": [
     "dist/**/*"
@@ -17,7 +17,7 @@
   "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chronoDave/hyper.git"
+    "url": "git+https://github.com/chronoDave/dom.git"
   },
   "scripts": {
     "env": "node scripts/env.ts",

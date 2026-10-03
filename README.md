@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>@chronocide/hyper</h1>
+  <h1>@chronocide/dom</h1>
   <p>Tiny DOM library</p>
 </div>
 
@@ -7,15 +7,15 @@
   <a href="/LICENSE">
     <img alt="License AGPLv3" src="https://img.shields.io/badge/license-AGPLv3-blue.svg" />
   </a>
-  <img alt="Bundle size" src="https://deno.bundlejs.com/?q=@chronocide/hyper&badge">
-  <a href="https://www.npmjs.com/package/@chronocide/hyper">
-    <img alt="NPM" src="https://img.shields.io/npm/v/@chronocide/hyper?label=npm">
+  <img alt="Bundle size" src="https://deno.bundlejs.com/?q=@chronocide/dom&badge">
+  <a href="https://www.npmjs.com/package/@chronocide/dom">
+    <img alt="NPM" src="https://img.shields.io/npm/v/@chronocide/dom?label=npm">
   </a>
 </div>
 
 ---
 
-`hyper` is a tiny TypeScript library designed to ease working with the DOM. `hyper` tries to be as simple as possible whilst maintaining good developer experience.
+`dom` is a tiny TypeScript library designed to ease working with the DOM. `dom` tries to be as simple as possible whilst maintaining good developer experience.
 
 ## Features
 
@@ -29,7 +29,7 @@
 ## Installation
 
 ```sh
-npm i @chronocide/hyper
+npm i @chronocide/dom
 ```
 
 ## Usage
@@ -48,7 +48,7 @@ npm i @chronocide/hyper
 Creates [HTML element](https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement).
 
 ```ts
-import h from '@chronocide/hyper';
+import h from '@chronocide/dom';
 
 const img = h('img')({ src: '/cat.png' })(); // <img src="/cat.png">
 ```
@@ -58,7 +58,7 @@ const img = h('img')({ src: '/cat.png' })(); // <img src="/cat.png">
 Creates [SVG element](https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS#namespaceuri).
 
 ```ts
-import { svg } from '@chronocide/hyper';
+import { svg } from '@chronocide/dom';
 
 /** @see https://fontawesome.com/icons/bars */
 const icon = svg('svg')({ xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 640 640' })(
@@ -71,7 +71,7 @@ const icon = svg('svg')({ xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 640
 Creates [MathML element](https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS#namespaceuri).
 
 ```ts
-import { mathml } from '@chronocide/hyper';
+import { mathml } from '@chronocide/dom';
 
 const fraction = mathml('math')()(
   mathml('mfrac')()(
@@ -86,7 +86,7 @@ const fraction = mathml('math')()(
 Creates [XML element](https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS#namespaceuri).
 
 ```ts
-import { xml } from '@chronocide/hyper';
+import { xml } from '@chronocide/dom';
 
 const feed = xml('feed')({ 'xml:lang': 'en-GB' })(); // <feed xml:lang="en-GB"></feed>
 ```
@@ -96,7 +96,7 @@ const feed = xml('feed')({ 'xml:lang': 'en-GB' })(); // <feed xml:lang="en-GB"><
 Set [element attributes](https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute).
 
 ```ts
-import { set } from '@chronocide/hyper';
+import { set } from '@chronocide/dom';
 
 set(img)({ width: 500, height: 500 }); // <img width="500" height="500">
 ```
@@ -106,7 +106,7 @@ set(img)({ width: 500, height: 500 }); // <img width="500" height="500">
 Set [element styles](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/setProperty).
 
 ```ts
-import { style } from '@chronocide/hyper';
+import { style } from '@chronocide/dom';
 
 style(img)({ display: "block" }); // <img style="display: block;">
 ```
@@ -127,7 +127,7 @@ Keeping track of children within a list can be tedious. `list` caches state and 
 Where `array` and `object` can only contain aforementioned types.
 
 ```ts
-import h, { list } from '@chronocide/hyper';
+import h, { list } from '@chronocide/dom';
 
 const ul = h('ul')()(); // <ul></ul>
 const li = (x: string) => h('li')()(x);
@@ -171,7 +171,7 @@ Virtualisation is a technique that improves list performance by limiting the amo
 **Note**: `virtual` attaches event listeners to the root element and window. Please make sure to clean up these listeners if the element is removed using `cleanup`.
 
 ```ts
-import h, { virtual } from '@chronocide/hyper';
+import h, { virtual } from '@chronocide/dom';
 
 type Planet = { id: string; name: string };
 
@@ -199,21 +199,21 @@ document.body.removeChild(root);
 
 ## Testing
 
-`hyper` relies on the DOM, which may not always be available. In those cases, it's possible to set a custom DOM using `env`:
+`dom` relies on the DOM, which may not always be available. In those cases, it's possible to set a custom DOM using `env`:
 
 ```TS
-import { env } from '@chronocide/hyper';
+import { env } from '@chronocide/dom';
 import { JSDOM } from 'jsdom';
 
 const dom = new JSDOM();
 env.document = dom.window.document;
 ```
 
-Examples can be found in the test files, such as [hyper.spec.ts](/src/hyper.spec.ts).
+Examples can be found in the test files, such as [dom.spec.ts](/src/dom.spec.ts).
 
 ## Development
 
-`hyper` uses `puppeteer` for browser testing and does not install Chrome by default. To run tests, create an `.env` file using:
+`dom` uses `puppeteer` for browser testing and does not install Chrome by default. To run tests, create an `.env` file using:
 
 ```sh
 npm run env

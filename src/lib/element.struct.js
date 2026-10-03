@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable import-x/unambiguous */
-const { default: h, virtual } = window.hyper;
+const { default: h, virtual } = window.dom;
 
 const container = h('div')({
   style: {

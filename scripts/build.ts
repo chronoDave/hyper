@@ -19,11 +19,11 @@ const measure = (label: string) =>
 
 await Promise.all([
   measure('esbuild')(async () => esbuild.build({
-    entryPoints: ['src/hyper.ts'],
+    entryPoints: ['src/dom.ts'],
     outdir: 'dist',
     platform: 'node',
     bundle: true,
     format: 'esm'
   })),
-  measure('dts-bundle-generator')(async () => run('dts-bundle-generator -o dist/hyper.d.ts src/hyper.ts --export-referenced-types=false --no-banner=true --no-check=true'))
+  measure('dts-bundle-generator')(async () => run('dts-bundle-generator -o dist/dom.d.ts src/dom.ts --export-referenced-types=false --no-banner=true --no-check=true'))
 ]);

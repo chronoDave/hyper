@@ -247,9 +247,9 @@ var virtual = (env2) => (options) => (root, container) => {
   };
 };
 
-// src/hyper.ts
+// src/dom.ts
 var env = new Env();
-var hyper_default = html(env);
+var dom_default = html(env);
 var set2 = set;
 var style2 = style;
 var svg2 = svg(env);
@@ -258,7 +258,7 @@ var xml2 = xml(env);
 var list2 = list;
 var virtual2 = virtual(env);
 export {
-  hyper_default as default,
+  dom_default as default,
   env,
   list2 as list,
   mathml2 as mathml,

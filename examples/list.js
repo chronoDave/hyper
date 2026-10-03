@@ -1,4 +1,4 @@
-import h, { list } from '../dist/hyper.js';
+import h, { list } from '../dist/dom.js';
 
 const random = arr => arr[Math.round(Math.random() * arr.length) % arr.length];
 

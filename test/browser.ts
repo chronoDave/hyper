@@ -8,13 +8,13 @@ export type BrowserOptions = {
 export default async (script: string, options?: BrowserOptions) => {
   const [result, browser] = await Promise.all([
     esbuild.build({
-      entryPoints: ['src/hyper.ts'],
+      entryPoints: ['src/dom.ts'],
       write: false,
       bundle: true,
       format: 'iife',
-      globalName: 'window.hyper',
+      globalName: 'window.dom',
       minify: true,
-      outfile: 'hyper.js'
+      outfile: 'dom.js'
     }),
     launch({ executablePath: process.env.BROWSER_PATH, headless: !options?.show })
   ]);

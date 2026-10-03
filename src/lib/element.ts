@@ -127,7 +127,7 @@ export const xml = (env: Env) =>
  *
  * Where `array` and `object` can only contain aformentioned types.
  *
- * @see https://github.com/chronoDave/hyper?tab=readme-ov-file#list
+ * @see https://github.com/chronoDave/dom?tab=readme-ov-file#list
  */
 export const list = <T extends Json>(render: (x: T, i: number, arr: T[]) => Element) =>
   (root: Element) => {
@@ -160,7 +160,7 @@ export type VirtualOptions<T> = CellOptions<T> & {
 /**
  * Create cached virtualised element container
  *
- * @see https://github.com/chronoDave/hyper?tab=readme-ov-file#virtual
+ * @see https://github.com/chronoDave/dom?tab=readme-ov-file#virtual
  */
 export const virtual = (env: Env) =>
   <T>(options: VirtualOptions<T>) =>

@@ -1,4 +1,4 @@
-import h from '../dist/hyper.js';
+import h from '../dist/dom.js';
 
 const button = h('button')({ type: 'button' })('0');
 button.addEventListener('click', () => {
